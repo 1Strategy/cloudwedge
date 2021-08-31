@@ -1,0 +1,6 @@
+{
+  "stackName": "cloudvelum-autogen-mango-dashboard-stack",
+  "s3TemplateKey": "templates/cloudvelum-autogen-mango-dashboard-stack/1600799938/template.json",
+  "stackType": "dashboard",
+  "stackOwner": "mango"
+}

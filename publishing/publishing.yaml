@@ -1,0 +1,174 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  Stack to create infrastructure for publishing CloudVelum.
+
+  Resources: [ Public Artifacts Bucket ]
+
+Conditions:
+    IsUsWest2Region: !Equals [ !Ref 'AWS::Region', 'us-west-2' ]
+
+Resources:
+
+  CloudVelumPublicArtifactsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      # AccelerateConfiguration:
+      #   AccelerateConfiguration
+      # AccessControl: String
+      # AnalyticsConfigurations:
+      #   - AnalyticsConfiguration
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      BucketName: !Sub "cloudvelum-public-artifacts-${AWS::Region}"
+      # CorsConfiguration:
+      #   CorsConfiguration
+      # InventoryConfigurations:
+      #   - InventoryConfiguration
+      LifecycleConfiguration:
+        Rules:
+          - Id: AbortIncompleteMultipartUploadAfter1Day
+            Status: Enabled
+            AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 1
+          - Id: TransitionWithAge
+            Status: Enabled
+            Transitions:
+              - StorageClass: STANDARD_IA
+                TransitionInDays: 30
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: FALSE
+        BlockPublicPolicy: FALSE
+        IgnorePublicAcls: FALSE
+        RestrictPublicBuckets: FALSE
+      Tags:
+        - Key: app:name
+          Value: cloudvelum
+      WebsiteConfiguration:
+        IndexDocument: index.html
+
+  CloudVelumPublicArtifactsBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref CloudVelumPublicArtifactsBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: AllowPublic
+            Effect: Allow
+            Principal: "*"
+            Action: s3:GetObject
+            Resource:
+              - !Sub arn:aws:s3:::${CloudVelumPublicArtifactsBucket}/public/*
+
+  CloudVelumDocsSandboxBucket:
+    Condition: IsUsWest2Region
+    Type: AWS::S3::Bucket
+    Properties:
+      # AccelerateConfiguration:
+      #   AccelerateConfiguration
+      # AccessControl: String
+      # AnalyticsConfigurations:
+      #   - AnalyticsConfiguration
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      BucketName: cloudvelum.1strategy-sandbox.com
+      # CorsConfiguration:
+      #   CorsConfiguration
+      # InventoryConfigurations:
+      #   - InventoryConfiguration
+      LifecycleConfiguration:
+        Rules:
+          - Id: AbortIncompleteMultipartUploadAfter1Day
+            Status: Enabled
+            AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 1
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: FALSE
+        BlockPublicPolicy: FALSE
+        IgnorePublicAcls: FALSE
+        RestrictPublicBuckets: FALSE
+      Tags:
+        - Key: app:name
+          Value: cloudvelum
+      WebsiteConfiguration:
+        IndexDocument: index.html
+
+  CloudVelumDocsSandboxBucketPolicy:
+    Condition: IsUsWest2Region
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref CloudVelumDocsSandboxBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: AllowPublic
+            Effect: Allow
+            Principal: "*"
+            Action: s3:GetObject
+            Resource:
+              - !Sub arn:aws:s3:::${CloudVelumDocsSandboxBucket}/*
+
+  CloudVelumDocsBucket:
+    Condition: IsUsWest2Region
+    Type: AWS::S3::Bucket
+    Properties:
+      # AccelerateConfiguration:
+      #   AccelerateConfiguration
+      # AccessControl: String
+      # AnalyticsConfigurations:
+      #   - AnalyticsConfiguration
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      BucketName: cloudvelum.1strategy.com
+      # CorsConfiguration:
+      #   CorsConfiguration
+      # InventoryConfigurations:
+      #   - InventoryConfiguration
+      LifecycleConfiguration:
+        Rules:
+          - Id: AbortIncompleteMultipartUploadAfter1Day
+            Status: Enabled
+            AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 1
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: FALSE
+        BlockPublicPolicy: FALSE
+        IgnorePublicAcls: FALSE
+        RestrictPublicBuckets: FALSE
+      Tags:
+        - Key: app:name
+          Value: cloudvelum
+      WebsiteConfiguration:
+        IndexDocument: index.html
+
+  CloudVelumDocsBucketPolicy:
+    Condition: IsUsWest2Region
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref CloudVelumDocsBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: AllowPublic
+            Effect: Allow
+            Principal: "*"
+            Action: s3:GetObject
+            Resource:
+              - !Sub arn:aws:s3:::${CloudVelumDocsBucket}/*
+
+
+Outputs:
+  CloudVelumPublicArtifactsBucket:
+    Description: CloudVelum public artifacts bucket
+    Value: !Ref CloudVelumPublicArtifactsBucket
+
+  CloudVelumDocsBucket:
+    Condition: IsUsWest2Region
+    Description: CloudVelum public docs bucket
+    Value: !Ref CloudVelumDocsBucket

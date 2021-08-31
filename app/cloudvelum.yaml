@@ -1,0 +1,601 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+
+Description: >
+  CloudVelum is an AWS Cloudwatch monitoring framework that accelerates your
+  ability to get up and running with native AWS monitoring services.
+
+Metadata:
+  # AWS::ServerlessRepo::Application:
+  #   Name: cloudvelum-monitoring
+  #   Description: >
+  #     CloudVelum is an AWS Cloudwatch monitoring framework that accelerates your
+  #     ability to get up and running with native AWS monitoring services.
+  #   Author: 1strategy
+  #   SpdxLicenseId: MIT
+  #   LicenseUrl: ../LICENSE.txt
+  #   ReadmeUrl: ../README.md
+  #   Labels: ["cloudwatch", "monitoring", "mangement", "cost"]
+  #   HomePageUrl: https://gitlab.com/1strategy/internal/cloudvelum
+  #   SemanticVersion: x.x.x
+  #   SourceCodeUrl: https://gitlab.com/1strategy/internal/cloudvelum
+
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: "Spoke Account Setup"
+        Parameters:
+          - SpokeAccountIds
+          # - SpokeAccountRegions
+      - Label:
+          default: "Optional Features"
+        Parameters:
+          - CloudVelumIamRoleNamePrefix
+          - DebugLocalRoleArn
+      - Label:
+          default: "Internal Settings (Ignore)"
+        Parameters:
+          - CloudVelumEnvironment
+          - CloudVelumVersion
+    ParameterLabels:
+      CloudVelumEnvironment:
+        default: "CloudVelum Environment"
+      CloudVelumVersion:
+        default: "CloudVelum Version"
+      CloudVelumIamRoleNamePrefix:
+        default: "CloudVelum iam role prefix"
+      SpokeAccountIds:
+        default: "Spoke Account Ids"
+      DebugLocalRoleArn:
+        default: "Debug local role arn"
+      # SpokeAccountRegions:
+      #   default: "Spoke Regions"
+
+Parameters:
+
+  CloudVelumEnvironment:
+    Type: String
+    Description: CloudVelum running environment to target (prd or dev)
+    Default: prd
+
+  CloudVelumVersion:
+    Type: String
+    Description: "Version reference if deploying specific version, else itll be latest. For example: 1.0.0"
+    Default: "latest"
+
+  CloudVelumIamRoleNamePrefix:
+    Type: String
+    Description: Prefix to add to all the iam roles that are created (include the hyphen)
+    Default: ""
+
+  # TODO: Have some flags for different features
+  FeatureEnvNameDetect:
+    Type: String
+    Description: Auto detect alarm level from resource name (name-prd maps to Critical)
+    Default: False
+
+  SpokeAccountIds:
+    Type: CommaDelimitedList
+    Description: "Comma-delimited list of the account ids into which this stackset should be deployed. For example: 123456789123,987654321123"
+
+  DebugLocalRoleArn:
+    Type: String
+    Description: "If you want to assume the spoke worker role to debug from you local, add a role arn that you will have locally, and this will be added to the spoke role policy. For example: arn:aws:iam::ACCOUNTID:role/Your-Local-Role"
+
+  # SpokeAccountRegions:
+  #   Type: CommaDelimitedList
+  #   Default: "us-west-2,us-east-1,us-east-2"
+  #   Description: 'Comma-delimited list of the regions this stackset should be deployed to. For example: "us-west-2,us-east-1"'
+
+Conditions:
+  IsUseIamRoleNamePrefix: !Not
+    - !Equals
+      - !Ref CloudVelumIamRoleNamePrefix
+      - ""
+Globals:
+  Function:
+    Runtime: python3.8
+    Timeout: 30
+    Environment:
+      Variables:
+        REGION: !Sub ${AWS::Region}
+        ENVIRONMENT: !Ref CloudVelumEnvironment
+        SPOKE_WORKER_ROLE_NAME: !If
+        - IsUseIamRoleNamePrefix
+        - !Sub "${CloudVelumIamRoleNamePrefix}cloudvelum-spoke-worker-role"
+        - "cloudvelum-spoke-worker-role"
+
+Resources:
+  # ---------------------------------------------------------------------------
+  # Bucket
+  # Private Assets Bucket for sharing private assets (e.g. stack templates)
+  # ---------------------------------------------------------------------------
+  PrivateAssetsS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: True
+        BlockPublicPolicy: True
+        IgnorePublicAcls: True
+        RestrictPublicBuckets: True
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      LifecycleConfiguration:
+        Rules:
+          - ExpirationInDays: 2
+            Id: expireAfter2Days
+            Status: Enabled
+      Tags:
+        - Key: app:name
+          Value: cloudvelum
+        - Key: app:env
+          Value: !Ref CloudVelumEnvironment
+
+  PrivateAssetsS3BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref PrivateAssetsS3Bucket
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Action:
+              - s3:GetObject
+              - s3:ListBucket
+              - s3:GetBucketLocation
+              - s3:GetObjectVersion
+              - s3:GetLifecycleConfiguration
+              - s3:PutObject
+              - s3:PutObjectAcl
+              - s3:PutLifecycleConfiguration
+            Resource:
+              - !Sub "arn:${AWS::Partition}:s3:::${PrivateAssetsS3Bucket}"
+              - !Sub "arn:${AWS::Partition}:s3:::${PrivateAssetsS3Bucket}/*"
+            Principal:
+                AWS: !Ref SpokeAccountIds
+
+  ##
+  ##
+  ## Builder Infrastructure
+  ##
+  ##
+
+  # ---------------------------------------------------------------------------
+  # LayerVersion
+  # Layer is added to all functions to provide supported service classes
+  # ---------------------------------------------------------------------------
+  CloudVelumLambdaLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      Description: Layer provides classes for all the services CloudVelum supports
+      ContentUri: ../.build/layer # This is produced by the build command script
+      CompatibleRuntimes:
+        - python3.8
+      RetentionPolicy: Retain
+    Metadata:
+      BuildMethod: python3.8
+
+  # ---------------------------------------------------------------------------
+  # Role
+  # Used by all the lambdas to do work, it will assume the worker role in the spoke account
+  # ---------------------------------------------------------------------------
+  CloudVelumHubWorkerRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: !If
+        - IsUseIamRoleNamePrefix
+        - !Sub "${CloudVelumIamRoleNamePrefix}cloudvelum-hub-worker-role"
+        - "cloudvelum-hub-worker-role"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action: "sts:AssumeRole"
+      Path: "/"
+      Policies:
+        - PolicyName: AllowAssumeToSpoke
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - sts:AssumeRole
+                Resource: !Sub "arn:aws:iam::*:role/${CloudVelumIamRoleNamePrefix}cloudvelum-spoke-worker-role"
+
+
+  # ---------------------------------------------------------------------------
+  # Function
+  # Used by Builder state machine
+  # ---------------------------------------------------------------------------
+  GetResourcesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: >
+        Get a list of resources for a the supported CloudVelum services (e.g. ec2, rds)
+      CodeUri: src/get_resources
+      Role: !GetAtt CloudVelumHubWorkerRole.Arn
+      Handler: index.lambda_handler
+      Layers:
+        - !Ref CloudVelumLambdaLayer
+
+  # ---------------------------------------------------------------------------
+  # Function
+  # Used by Builder state machine
+  # ---------------------------------------------------------------------------
+  CreateStacksFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: >
+        Create stacks for all the cloudvelum resources. Stacks are created for each
+        owner.
+      CodeUri: src/create_stacks
+      Role: !GetAtt CloudVelumHubWorkerRole.Arn
+      Handler: index.lambda_handler
+      Layers:
+        - !Ref CloudVelumLambdaLayer
+      Environment:
+        Variables:
+          PRIVATE_ASSETS_BUCKET: !Ref PrivateAssetsS3Bucket
+          # Public assets bucket created outside of app itself
+          PUBLIC_ASSETS_BUCKET: !Sub "cloudvelum-public-artifacts-${AWS::Region}"
+          ALARM_ACTION_TARGET_TOPIC_ARN: !Ref InternalActionTargetTopic
+          USER_TARGET_TOPIC_ARN: !Ref CloudVelumAlertsTopic
+
+  # ---------------------------------------------------------------------------
+  # Function
+  # Used by Builder state machine
+  # ---------------------------------------------------------------------------
+  DeployStackFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: >
+        Deploy the stack template using the s3 reference.
+      CodeUri: src/deploy_stack
+      Role: !GetAtt CloudVelumHubWorkerRole.Arn
+      Handler: index.lambda_handler
+      Layers:
+        - !Ref CloudVelumLambdaLayer
+      Environment:
+        Variables:
+          PRIVATE_ASSETS_BUCKET: !Ref PrivateAssetsS3Bucket
+
+  # ---------------------------------------------------------------------------
+  # Function
+  # Used by Builder state machine
+  # ---------------------------------------------------------------------------
+  CheckStatusFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: >
+        Checks the status of the stack and returns current status
+      CodeUri: src/check_status
+      Role: !GetAtt CloudVelumHubWorkerRole.Arn
+      Handler: index.lambda_handler
+      Layers:
+        - !Ref CloudVelumLambdaLayer
+
+  # ---------------------------------------------------------------------------
+  # Function
+  # Used by Builder state machine
+  # ---------------------------------------------------------------------------
+  TriageStacksFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: >
+        Gets a list of stacks that should be deleted
+      CodeUri: src/triage_stacks
+      Role: !GetAtt CloudVelumHubWorkerRole.Arn
+      Handler: index.lambda_handler
+      Layers:
+        - !Ref CloudVelumLambdaLayer
+
+  # ---------------------------------------------------------------------------
+  # Function
+  # Used by Builder state machine
+  # ---------------------------------------------------------------------------
+  DeleteStackFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: >
+        Deletes the stack using cloudformation api
+      CodeUri: src/delete_stack
+      Role: !GetAtt CloudVelumHubWorkerRole.Arn
+      Handler: index.lambda_handler
+      Layers:
+        - !Ref CloudVelumLambdaLayer
+
+  # ---------------------------------------------------------------------------
+  # Function
+  # Used by custom resource
+  # ---------------------------------------------------------------------------
+  CleanupResourcesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: >
+        Deletes the stacks that cloudvelum has created (alarms, dashboards) when the cloudvelum application
+        is deleted
+      CodeUri: src/cleanup_resources
+      Role: !GetAtt CloudVelumHubWorkerRole.Arn
+      Layers:
+        - !Ref CloudVelumLambdaLayer
+      Handler: index.lambda_handler
+
+  # ---------------------------------------------------------------------------
+  # Function
+  # Used by custom resource
+  # ---------------------------------------------------------------------------
+  CleanupResourcesCustom:
+    Type: "Custom::CleanupResourcesCustom"
+    Properties:
+      ServiceToken: !GetAtt CleanupResourcesFunction.Arn
+
+  # ---------------------------------------------------------------------------
+  # StateMachine
+  # Run status check on the target stacks and wait till they hit stable a state
+  # ---------------------------------------------------------------------------
+  CloudVelumBuilderStackStatusStateMachine:
+    Type: AWS::Serverless::StateMachine
+    Properties:
+      DefinitionUri: resources/cloudvelum-stack-status.steps.json
+      DefinitionSubstitutions:
+        CheckStatusFunctionArn: !GetAtt CheckStatusFunction.Arn
+      Policies:
+        - Statement:
+            - Sid: AllowLambdaInvokes
+              Effect: Allow
+              Action:
+                - lambda:InvokeFunction
+              Resource:
+                - !GetAtt CheckStatusFunction.Arn
+
+  # ---------------------------------------------------------------------------
+  # StateMachine
+  # Receives events and builds stacks to alarm cloudvelum resources
+  # ---------------------------------------------------------------------------
+  CloudVelumBuilderStateMachine:
+    Type: AWS::Serverless::StateMachine
+    Properties:
+      DefinitionUri: resources/cloudvelum-builder.steps.json
+      DefinitionSubstitutions:
+        GetResourcesFunctionArn: !GetAtt GetResourcesFunction.Arn
+        CreateStacksFunctionArn: !GetAtt CreateStacksFunction.Arn
+        DeployStackFunctionArn: !GetAtt DeployStackFunction.Arn
+        CheckStatusFunctionArn: !GetAtt CheckStatusFunction.Arn
+        TriageStacksFunctionArn: !GetAtt TriageStacksFunction.Arn
+        DeleteStackFunctionArn: !GetAtt DeleteStackFunction.Arn
+        CloudVelumBuilderStackStatusStateMachineArn: !Ref CloudVelumBuilderStackStatusStateMachine
+      Policies:
+        - StepFunctionsExecutionPolicy:
+            StateMachineName: !GetAtt CloudVelumBuilderStackStatusStateMachine.Name
+        - Statement:
+            - Sid: AllowLambdaInvokes
+              Effect: Allow
+              Action:
+                - lambda:InvokeFunction
+              Resource:
+                - !GetAtt GetResourcesFunction.Arn
+                - !GetAtt CreateStacksFunction.Arn
+                - !GetAtt DeployStackFunction.Arn
+                - !GetAtt CheckStatusFunction.Arn
+                - !GetAtt TriageStacksFunction.Arn
+                - !GetAtt DeleteStackFunction.Arn
+            - Sid: AllowSubWorkflowRead
+              Effect: Allow
+              Action:
+                - states:DescribeExecution
+                - states:StopExecution
+              Resource:
+                - "*"
+            - Sid: AllowSubWorkflowManagedRule
+              Effect: Allow
+              Action:
+                - events:PutTargets
+                - events:PutRule
+                - events:DescribeRule
+              Resource:
+                - !Sub "arn:aws:events:${AWS::Region}:${AWS::AccountId}:rule/StepFunctionsGetEventsForStepFunctionsExecutionRule"
+
+  ##
+  ##
+  ## Alerter Infrastructure
+  ##
+  ##
+
+  # ---------------------------------------------------------------------------
+  # Function
+  # Function receives all the alarms, runs triage, and starts step function
+  # ---------------------------------------------------------------------------
+  IngestAlertFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: >
+        Ingest alarms alerts from alarm action topic sns, triages alert for
+        alert type and info, and then starts step function to get alert sent out
+      CodeUri: src/ingest_alert
+      Role: !GetAtt CloudVelumHubWorkerRole.Arn
+      Handler: index.lambda_handler
+      Layers:
+        - !Ref CloudVelumLambdaLayer
+      Policies:
+        # Allow function to start step function
+        - StepFunctionsExecutionPolicy:
+            StateMachineName: !GetAtt CloudVelumAlerterStateMachine.Name
+      Environment:
+        Variables:
+          STEPFUNCTION_ARN: !Ref CloudVelumAlerterStateMachine
+
+  # ---------------------------------------------------------------------------
+  # Topic
+  # This topic receives the alarm notifications
+  # ---------------------------------------------------------------------------
+  InternalActionTargetTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: ❌ CloudVelum users, this topic is used for internal use only. Do not subscribe here.
+      Subscription:
+        - Protocol: lambda
+          Endpoint: !GetAtt IngestAlertFunction.Arn
+
+  # ---------------------------------------------------------------------------
+  # Lambda::Permission
+  # Allows the topic to invoke the function subscribed to it
+  # ---------------------------------------------------------------------------
+  AlarmActionTopicInvokeLambdaPermission:
+    Type: "AWS::Lambda::Permission"
+    Properties:
+      Action: "lambda:InvokeFunction"
+      FunctionName: !Ref IngestAlertFunction
+      Principal: sns.amazonaws.com
+
+  # ---------------------------------------------------------------------------
+  # TopicPolicy
+  # Allow alarm events to publish to this topic
+  # ---------------------------------------------------------------------------
+  InternalActionTargetTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      Topics:
+        - !Ref InternalActionTargetTopic
+      PolicyDocument:
+        Id: InternalActionTargetTopicPolicy
+        Version: "2012-10-17"
+        Statement:
+          - Sid: AllowCloudwatchToPublish
+            Effect: Allow
+            Principal:
+              Service: cloudwatch.amazonaws.com
+            Action: sns:Publish
+            Resource: !Ref InternalActionTargetTopic
+
+  # ---------------------------------------------------------------------------
+  # Topic
+  # This topic is for users to subscribe to
+  # ---------------------------------------------------------------------------
+  CloudVelumAlertsTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: cloudvelum-alerts-topic
+      DisplayName: 🚨 CloudVelum Alert
+
+  # ---------------------------------------------------------------------------
+  # TopicPolicy
+  # Allow alarm events to publish to this topic
+  # ---------------------------------------------------------------------------
+  CloudVelumAlertsTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      Topics:
+        - !Ref CloudVelumAlertsTopic
+      PolicyDocument:
+        Id: CloudVelumAlertsTopicPolicy
+        Version: "2012-10-17"
+        Statement:
+          - Sid: AllowTopicAccess
+            Effect: Allow
+            Principal:
+              # TODO: AWS: 'publish_alert_lambda_arn'
+              AWS: "*"
+            Action:
+              - sns:GetTopicAttributes
+              - sns:SetTopicAttributes
+              - sns:AddPermission
+              - sns:RemovePermission
+              - sns:DeleteTopic
+              - sns:Subscribe
+              - sns:ListSubscriptionsByTopic
+              - sns:Publish
+              - sns:Receive
+            Resource: !Ref InternalActionTargetTopic
+
+  # ---------------------------------------------------------------------------
+  # StateMachine
+  # Receives alert and publishes out to delivery channels
+  # ---------------------------------------------------------------------------
+  CloudVelumAlerterStateMachine:
+    Type: AWS::Serverless::StateMachine
+    Properties:
+      DefinitionUri: resources/cloudvelum-alerter.steps.json
+      DefinitionSubstitutions:
+        # PublishEventsFunctionArn: !GetAtt IngestAlertFunction.Arn
+        CloudVelumAlertsTopicArn: !Ref CloudVelumAlertsTopic
+      Policies:
+        - LambdaInvokePolicy:
+            FunctionName: !Ref CheckStatusFunction
+        - SNSPublishMessagePolicy:
+            TopicName: !GetAtt CloudVelumAlertsTopic.TopicName
+
+
+  # ---------------------------------------------------------------------------
+  # Event bus policy
+  # Sets up event bus to allow events from spoke accounts
+  # ---------------------------------------------------------------------------
+  EventBusPolicyAllowSpokes:
+    Type: AWS::Events::EventBusPolicy
+    Properties:
+      # Action: "events:PutEvents"
+      # Condition:
+      #   Condition
+      # EventBusName: String
+      StatementId: "CloudVelumEventBusPolicyToAllowSpokes"
+      Statement:
+          Effect: "Allow"
+          Principal:
+              AWS: !Ref SpokeAccountIds
+              # Spoke account ids will be transformed to the root arns: - "arn:aws:iam::123456789:root"
+          Action:
+              - "events:PutEvents"
+          Resource: !Sub "arn:aws:events:${AWS::Region}:${AWS::AccountId}:event-bus/default"
+          # Condition:
+          #     StringEquals:
+          #         "aws:PrincipalOrgID": "o-1234567890"
+
+
+
+  # ---------------------------------------------------------------------------
+  # SpokeStackSet
+  # Sets up the spokes on a stack set to send out to mutli-account/region
+  # ---------------------------------------------------------------------------
+  CloudVelumSpokeStackSet:
+    Type: AWS::CloudFormation::StackSet
+    Properties:
+      StackSetName: cloudvelum-spoke-stackset
+      Description: cloudvelum spoke stack sets up role to be assumed by hub and events forwarder
+      # AutoDeployment:
+      #   Enabled: true
+      #   RetainStacksOnAccountRemoval: !Ref RetainStacksOnAccountRemovalFromOrg
+      Capabilities:
+        - CAPABILITY_IAM
+        - CAPABILITY_NAMED_IAM
+      OperationPreferences:
+        FailureToleranceCount: 0
+        MaxConcurrentCount: 1
+        RegionOrder:
+          - !Ref AWS::Region
+      PermissionModel: SELF_MANAGED
+      StackInstancesGroup:
+        - DeploymentTargets:
+            # OrganizationalUnitIds: !Ref OrganizationalUnits
+            Accounts: !Ref SpokeAccountIds
+          Regions:
+            - !Ref AWS::Region
+      Parameters:
+        # Used for parameter overrides, if necessary
+        - ParameterKey: HubCloudVelumStepFunctionBuilderArn
+          ParameterValue: !Ref CloudVelumBuilderStateMachine
+        - ParameterKey: CloudVelumEnvironment
+          ParameterValue: !Ref CloudVelumEnvironment
+        - ParameterKey: HubAccountId
+          ParameterValue: !Ref AWS::AccountId
+        - ParameterKey: HubAccountWorkerRoleArn
+          ParameterValue: !GetAtt CloudVelumHubWorkerRole.Arn
+        - ParameterKey: CloudVelumIamRoleNamePrefix
+          ParameterValue: !Ref CloudVelumIamRoleNamePrefix
+        - ParameterKey: HubPrivateAssetsS3Bucket
+          ParameterValue: !Ref PrivateAssetsS3Bucket
+        - ParameterKey: HubDebugLocalRoleArn
+          ParameterValue: !Ref DebugLocalRoleArn
+      TemplateURL: !Sub "https://cloudvelum-public-artifacts-${AWS::Region}.s3-${AWS::Region}.amazonaws.com/public/cloudvelum/${CloudVelumVersion}/cloudvelum-spoke.yaml"

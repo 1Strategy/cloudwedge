@@ -1,0 +1,11 @@
+{
+  "stackName": "cloudvelum-cloudvelum-alarms-stack",
+  "s3TemplateKey": "templates/cloudvelum-cloudvelum-alarms-stack/1596664387/template.json",
+  "stackType": "alarms",
+  "stackOwner": "cloudvelum",
+  "deploy": {
+    "inProgress": true,
+    "stackName": "cloudvelum-cloudvelum-alarms-stack",
+    "waitAttempts": 0
+  }
+}

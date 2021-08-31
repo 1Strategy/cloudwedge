@@ -1,0 +1,108 @@
+{
+  "event": {
+    "version": "0",
+    "id": "a7b4535d-6987-2888-c510-4deab031d4f7",
+    "detail-type": "Tag Change on Resource",
+    "source": "aws.tag",
+    "account": "365733202121",
+    "time": "2019-10-09T23:38:20Z",
+    "region": "us-west-2",
+    "resources": [
+      "arn:aws:ec2:us-west-2:365733202121:instance/i-02c69ba04c16ab966"
+    ],
+    "detail": {
+      "changed-tag-keys": ["cloudvelum:alarm:ec2:netin:threshold"],
+      "service": "ec2",
+      "resource-type": "instance",
+      "version": 22,
+      "tags": {
+        "cloudvelum:alert:level": "critical",
+        "cloudvelum:alert:on-ok": "all",
+        "cloudvelum:alarm:ec2:evaluation-periods": "1",
+        "cloudvelum:alarm:ec2:netin:threshold": "8000000",
+        "cloudvelum:alert:active": "true",
+        "cloudvelum:alert:metrics": "CPUUtilization | StatusCheckFailed_Instance | StatusCheckFailed_System | NetworkIn",
+        "Name": "1s-dustin-stress"
+      }
+    },
+    "service": "ec2"
+  },
+  "targetAccountId": ACCOUNTID,
+  "ownerResources": {
+    "mango": {
+      "ec2": [
+        {
+          "service": "ec2",
+          "name": "msa-plmss-ratabase",
+          "uniqueId": "i-088ad8ce70a7b65fc",
+          "cloudwatchDimensionId": "i-088ad8ce70a7b65fc",
+          "owner": "mango",
+          "tags": [
+            { "Key": "aws:ec2launchtemplate:version", "Value": "5" },
+            { "Key": "Name", "Value": "msa-plmss-ratabase" },
+            { "Key": "cloudvelum:active", "Value": "true" },
+            { "Key": "cloudvelum:owner", "Value": "mango" },
+            {
+              "Key": "aws:autoscaling:groupName",
+              "Value": "msa-plmss-ratabase"
+            },
+            {
+              "Key": "aws:ec2launchtemplate:id",
+              "Value": "lt-0f8548639d63246fc"
+            }
+          ],
+          "ec2State": "running",
+          "ec2DetailedMonitoring": "disabled"
+        }
+      ],
+      "autoscalinggroup": [
+        {
+          "service": "autoscalinggroup",
+          "name": "msa-plmss-ratabase",
+          "uniqueId": "arn:aws:autoscaling:us-west-2:ACCOUNTID:autoScalingGroup:53f8da96-c212-42cd-8c28-13277c6b6803:autoScalingGroupName/msa-plmss-ratabase",
+          "cloudwatchDimensionId": "msa-plmss-ratabase",
+          "owner": "mango",
+          "tags": [
+            {
+              "ResourceId": "msa-plmss-ratabase",
+              "ResourceType": "auto-scaling-group",
+              "Key": "cloudvelum:active",
+              "Value": "true",
+              "PropagateAtLaunch": false
+            },
+            {
+              "ResourceId": "msa-plmss-ratabase",
+              "ResourceType": "auto-scaling-group",
+              "Key": "cloudvelum:level",
+              "Value": "critical",
+              "PropagateAtLaunch": true
+            },
+            {
+              "ResourceId": "msa-plmss-ratabase",
+              "ResourceType": "auto-scaling-group",
+              "Key": "cloudvelum:owner",
+              "Value": "mango",
+              "PropagateAtLaunch": true
+            }
+          ],
+          "metrics_enabled": [
+            { "Metric": "GroupDesiredCapacity", "Granularity": "1Minute" },
+            { "Metric": "GroupInServiceInstances", "Granularity": "1Minute" },
+            { "Metric": "GroupPendingCapacity", "Granularity": "1Minute" },
+            { "Metric": "GroupStandbyCapacity", "Granularity": "1Minute" },
+            { "Metric": "GroupPendingInstances", "Granularity": "1Minute" },
+            { "Metric": "GroupStandbyInstances", "Granularity": "1Minute" },
+            { "Metric": "GroupMaxSize", "Granularity": "1Minute" },
+            { "Metric": "GroupInServiceCapacity", "Granularity": "1Minute" },
+            { "Metric": "GroupTotalInstances", "Granularity": "1Minute" },
+            { "Metric": "GroupTerminatingInstances", "Granularity": "1Minute" },
+            { "Metric": "GroupMinSize", "Granularity": "1Minute" },
+            { "Metric": "GroupTotalCapacity", "Granularity": "1Minute" },
+            { "Metric": "GroupTerminatingCapacity", "Granularity": "1Minute" }
+          ]
+        }
+      ]
+    }
+  },
+  "isEmpty": false
+}
