@@ -6,13 +6,14 @@ outlined in cloudvelum.models.AWSService
 """
 
 from os import environ
+from typing import Any, Dict, List, Optional
+
 import boto3
 import jmespath
-from typing import List, Any, Dict, Optional
 
+from cloudvelum.models import AWSResource, AWSService
 from cloudvelum.utils.logger import get_logger
 from cloudvelum.utils.tags import TagsApi
-from cloudvelum.models import AWSService, AWSResource
 
 REGION = environ.get('REGION')
 
@@ -53,7 +54,7 @@ class StateMachineService(AWSService):
     }
 
     # There are dashboard additions that can be added at the metric level
-    dashboard_additions = {}
+    override_dashboard_metric_properties = {}
 
     @staticmethod
     def build_dashboard_widgets(resources: List[StateMachineResource]) -> List[Any]:
@@ -71,6 +72,7 @@ class StateMachineService(AWSService):
         """
 
         try:
+
             # Get things in a neat statemachine resource object
             cleaned_resources: List[StateMachineResource] = []
 

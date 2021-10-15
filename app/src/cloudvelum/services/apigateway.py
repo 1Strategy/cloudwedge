@@ -48,7 +48,7 @@ class ApiGatewayService(AWSService):
     }
 
     # There are dashboard additions that can be added at the metric level
-    dashboard_additions = {}
+    override_dashboard_metric_properties = {}
 
     @staticmethod
     def build_dashboard_widgets(resources: List[ApiGatewayResource]) -> List[Any]:

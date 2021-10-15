@@ -53,12 +53,15 @@ class GetResources():
 
         # Get resources for each supported service
         for service in supported_services:  # [EC2Service, RDSService, etc..]
+
             # Get the services name
             service_name: str = service.name
+
             # Get the resources
             service_resources = service.get_resources(session=SESSION)
 
-            # If we get any reasources for any service, toggle is_empty
+
+            # If we get any resources for any service, toggle is_empty
             if self.is_empty and len(service_resources) > 0:
                 self.is_empty = False
 

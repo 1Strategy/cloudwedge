@@ -49,7 +49,9 @@ class AWSService():
     default_metrics: Dict[str, Dict[str, str]]
     default_alarm_props: Dict[str, str]
     supported_metrics: Dict[str, Dict[str, str]]
-    dashboard_additions: Dict[str, Any]
+    override_dashboard_metrics_options: Dict[str, Any] = {}
+    override_dashboard_metric_properties: Dict[str, Any]
+    override_dashboard_widget_properties: Dict[str, Any] = {}
 
     # CloudVelum root tags
     TAG_ACTIVE: Optional[str] = "cloudvelum:active"
@@ -96,9 +98,9 @@ class AWSService():
         # The services can override this function if need to add in defaults
         return {}
 
-    @abstractmethod
-    def build_dashboard_widgets(resources: List[AWSResource]):
-        raise NotImplementedError
+    # @abstractmethod
+    # def build_dashboard_widgets(resources: List[AWSResource]):
+    #     raise NotImplementedError
 
     @staticmethod
     def _roundup(value: int, multiple: int = 60):
@@ -174,9 +176,11 @@ class AWSService():
                 after_first = False
                 for resource in resources:
 
+                    metrics_metric_options_dict = service.override_dashboard_metrics_options.get(metric, {})
+
                     if after_first:
                         # [ "...", "ExecutionsFailed", "StateMachineArn", "arn:aws:states:us-west-2:ACCOUNTID:stateMachine:CloudVelumBuilderStateMachine-Xm2QclLByXty" ]
-                        block.append(['...', resource['cloudwatchDimensionId']])
+                        block.append(['...', resource['cloudwatchDimensionId'], metrics_metric_options_dict])
                     else:
                         # [ "AWS/States", "ExecutionsFailed", "StateMachineArn", "arn:aws:states:us-west-2:ACCOUNTID:stateMachine:CloudVelumBuilderStateMachine-Xm2QclLByXty" ]
                         block.append(
@@ -184,9 +188,11 @@ class AWSService():
                                 service.cloudwatch_namespace,
                                 metric,
                                 service.cloudwatch_dimension,
-                                resource['cloudwatchDimensionId']
+                                resource['cloudwatchDimensionId'],
+                                metrics_metric_options_dict
                             ]
                         )
+
 
                     after_first = True
 
@@ -210,10 +216,10 @@ class AWSService():
                 }
 
                 # Add any dashboard overrides for the specific metric
-                metric_additions = service.dashboard_additions.get(metric, {})
+                metric_prop_override = service.override_dashboard_metric_properties.get(metric, {})
                 widget_metric_properties = {
                     **metric_properties,
-                    **metric_additions
+                    **metric_prop_override
                 }
 
                 widget_metric = {
@@ -221,6 +227,13 @@ class AWSService():
                     'width': 12,
                     'height': 6,
                     'properties': widget_metric_properties
+                }
+
+                # Add any dashboard overrides for the specific metric
+                widget_prop_override = service.override_dashboard_widget_properties.get(metric, {})
+                widget_metric = {
+                    **widget_metric,
+                    **widget_prop_override
                 }
 
                 dashboard_widgets.append(widget_metric)

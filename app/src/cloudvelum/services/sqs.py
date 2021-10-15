@@ -33,8 +33,8 @@ class SQSService(AWSService):
     cloudwatch_dashboard_section_title = "SQS"
     cloudwatch_dimension = "QueueName"
     # Default metric to be used when metrics are not explicit in tags
-    default_metrics = ["NumberOfMessagesSent",
-                       "ApproximateNumberOfMessagesVisible", "ApproximateNumberOfMessagesNotVisible", "ApproximateAgeOfOldestMessage"]
+    default_metrics = [
+                       "ApproximateNumberOfMessagesVisible", "ApproximateNumberOfMessagesNotVisible", "ApproximateAgeOfOldestMessage", "NumberOfMessagesSent"]
     # Alarm defaults for the service, applied if metric default doesnt exist
     default_alarm_props = {
         # 'EvaluationPeriods': "5",
@@ -46,28 +46,59 @@ class SQSService(AWSService):
 
     # List of supported metrics and default configurations
     supported_metrics = {
-        'NumberOfMessagesSent': {
-        },
         'ApproximateNumberOfMessagesVisible': {
         },
         'ApproximateNumberOfMessagesNotVisible': {
         },
         'ApproximateAgeOfOldestMessage': {
         },
+        'NumberOfMessagesSent': {
+        },
     }
 
     # There are dashboard additions that can be added at the metric level
-    dashboard_additions = {
-        'CPUUtilization': {
-            "annotations": {
-                "horizontal": [
-                    {
-                        "label": "High",
-                        "value": 90
-                    }
-                ]
-            }
-        }
+    override_dashboard_metrics_options = {
+        'ApproximateNumberOfMessagesVisible': { "label": "Last 1 Min", "stat": "Sum" },
+        'ApproximateNumberOfMessagesNotVisible': { "label": "Last 1 Min", "stat": "Sum" },
+        'ApproximateAgeOfOldestMessage': { "label": "Last 1 Min", "stat": "Sum" },
+    }
+
+    override_dashboard_metric_properties = {
+        'ApproximateNumberOfMessagesVisible': {
+            "view": "singleValue",
+            "period": 60,
+            "title":  "In Queue"
+        },
+        'ApproximateNumberOfMessagesNotVisible': {
+            "view": "singleValue",
+            "period": 60,
+            "title":  "In flight"
+        },
+        'ApproximateAgeOfOldestMessage': {
+            "view": "singleValue",
+            "period": 60,
+            "title":  "Oldest message age"
+        },
+    }
+
+    # There are dashboard additions that can be added at the metric level
+    override_dashboard_widget_properties = {
+        'NumberOfMessagesSent': {
+            'width': 24,
+            'height': 6,
+        },
+        'ApproximateNumberOfMessagesVisible': {
+            'width': 8,
+            'height': 3,
+        },
+        'ApproximateNumberOfMessagesNotVisible': {
+            'width': 8,
+            'height': 3,
+        },
+        'ApproximateAgeOfOldestMessage': {
+            'width': 8,
+            'height': 3,
+        },
     }
 
     @staticmethod
@@ -173,7 +204,7 @@ class SQSService(AWSService):
                 # Setup SQSResource values
                 service = SQSService.name
                 resource_name = arn.resource_id
-                resource_id = instance['QueueUrl']
+                resource_id = resource_name
                 resource_owner = TagsApi.get_owner_from_tags(tags)
                 tags = tags
 
@@ -181,7 +212,7 @@ class SQSService(AWSService):
                 clean_resource = SQSResource(
                     service=service,
                     name=resource_name,
-                    uniqueId=resource_id,
+                    uniqueId=resource_name,
                     cloudwatchDimensionId=resource_id,
                     owner=resource_owner,
                     tags=tags,
