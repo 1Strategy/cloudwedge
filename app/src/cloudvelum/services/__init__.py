@@ -8,13 +8,14 @@ from typing import List
 
 from cloudvelum.models import AWSService
 
-from .ec2 import EC2Service
-from .autoscalinggroup import AutoScalingGroupService
-from .rds import RDSService
-from .elasticbeanstalk import ElasticBeanstalkService
 from .apigateway import ApiGatewayService
-from .statemachine import StateMachineService
+from .autoscalinggroup import AutoScalingGroupService
+from .ec2 import EC2Service
 from .ecs import ECSService
+from .elasticbeanstalk import ElasticBeanstalkService
+from .rds import RDSService
+from .sqs import SQSService
+from .statemachine import StateMachineService
 
 
 class ServiceRegistry():
@@ -25,6 +26,7 @@ class ServiceRegistry():
         ElasticBeanstalkService,
         ApiGatewayService,
         StateMachineService,
+        SQSService,
         ECSService,
         AutoScalingGroupService
     ]
@@ -37,6 +39,7 @@ class ServiceRegistry():
         # basically just want to provide a quick way to lookup service dynamically
         registry = {
             'ec2': EC2Service,
+            'sqs': SQSService,
             'autoscalinggroup': AutoScalingGroupService,
             'rds': RDSService,
             'elasticbeanstalk': ElasticBeanstalkService,
