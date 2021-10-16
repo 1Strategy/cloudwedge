@@ -35,6 +35,8 @@ class SQSService(AWSService):
     # Default metric to be used when metrics are not explicit in tags
     default_metrics = [
                        "ApproximateNumberOfMessagesVisible", "ApproximateNumberOfMessagesNotVisible", "ApproximateAgeOfOldestMessage", "NumberOfMessagesSent"]
+    default_dashboard_metrics = [
+                       "ApproximateNumberOfMessagesVisible", "ApproximateNumberOfMessagesNotVisible", "ApproximateAgeOfOldestMessage"]
     # Alarm defaults for the service, applied if metric default doesnt exist
     default_alarm_props = {
         # 'EvaluationPeriods': "5",
@@ -58,6 +60,7 @@ class SQSService(AWSService):
 
     # There are dashboard additions that can be added at the metric level
     override_dashboard_metrics_options = {
+        'NumberOfMessagesSent': { "stat": "Sum" },
         'ApproximateNumberOfMessagesVisible': { "label": "Last 1 Min", "stat": "Sum" },
         'ApproximateNumberOfMessagesNotVisible': { "label": "Last 1 Min", "stat": "Sum" },
         'ApproximateAgeOfOldestMessage': { "label": "Last 1 Min", "stat": "Sum" },
@@ -129,7 +132,34 @@ class SQSService(AWSService):
         """
 
         # Get widgets with base method (like calling super)
-        return AWSService.build_dashboard_widgets(SQSService, resources)
+        return AWSService.build_dashboard_widgets(SQSService, resources, is_group_resources=False)
+
+    @staticmethod
+    def build_dashboard_widgets_byresource_extra(resource: SQSResource) -> List[Any]:
+        """
+        Build extra dashboard widgets for the resource
+        """
+
+        extra_widgets = []
+
+        extra_widgets.append({
+            "height": 6,
+            "width": 24,
+            "type": "metric",
+            "properties": {
+                "metrics": [
+                    [ "AWS/SQS", "NumberOfMessagesSent", "QueueName", resource['cloudwatchDimensionId'], { "stat": "Sum", "label": "Records Added (Interval @ 5 Min Sum)" } ],
+                    [ "...", resource['cloudwatchDimensionId'], { "stat": "Maximum", "label": "In Queue (Interval @ 5 Min Max)", } ]
+                ],
+                "period": 360,
+                "view": "timeSeries",
+                "title": "Records Added vs In Queue Rolling",
+                "region": REGION,
+            }
+        })
+
+        return extra_widgets
+
 
     @ staticmethod
     def get_resources(session: boto3.session.Session) -> List[SQSResource]:

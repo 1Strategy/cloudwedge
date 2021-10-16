@@ -10,13 +10,13 @@ import time
 from os import environ
 from typing import Dict, List
 
+from resource_alarm_factory import ResourceAlarmFactory
+
 from cloudvelum.models import AWSResource, AWSService
 from cloudvelum.services import ServiceRegistry
 from cloudvelum.utils.helpers import get_local_time
 from cloudvelum.utils.logger import get_logger
 from cloudvelum.utils.s3 import s3_save_object
-
-from resource_alarm_factory import ResourceAlarmFactory
 
 PRIVATE_ASSETS_BUCKET = environ.get('PRIVATE_ASSETS_BUCKET')
 PUBLIC_ASSETS_BUCKET = environ.get('PUBLIC_ASSETS_BUCKET')
