@@ -1,6 +1,10 @@
 ---
-title: API Gateway
+label: API Gateway
 ---
+
+# API Gateway
+
+[!badge icon="tools" text="In Progress" variant="warning"]
 
 ## CloudWatch Configuration
 
@@ -18,7 +22,9 @@ When an alarm is created it will first review the service defaults to populate t
 | :------------- | :------------ |
 | **Statistic**  | `Sum` |
 
-## Default Metrics
+## Default Alarm Metrics
+
+Unless there is a tag override, each gateway that is monitored will be bootstrapped with the default alarm metrics.
 
 - `Latency`
 - `IntegrationLatency`
@@ -27,50 +33,34 @@ When an alarm is created it will first review the service defaults to populate t
 
 ## Supported Metrics
 
-??? velum-metric "Latency"
+### `Latency`
 
-    #### Metric Name
+!!!light Defaults
+| Alarm Property | Default Value | Notes |
+| :------------- | :------------ | ----- |
+| TBD            |               |       |
+!!!
 
-    `Latency`
+### `IntegrationLatency`
 
-    #### Metric Defaults
+!!!light Defaults
+| Alarm Property | Default Value | Notes |
+| :------------- | :------------ | ----- |
+| TBD            |               |       |
+!!!
 
-    | Alarm Property | Default Value | Notes |
-    | :------------- | :------------ | ----- |
-    | TBD            |               |       |
+### `5XXError`
 
-??? velum-metric "IntegrationLatency"
+!!!light Defaults
+| Alarm Property | Default Value | Notes |
+| :------------- | :------------ | ----- |
+| TBD            |               |       |
+!!!
 
-    #### Metric Name
+### `4XXError`
 
-    `IntegrationLatency`
-
-    #### Metric Defaults
-
-    | Alarm Property | Default Value | Notes |
-    | :------------- | :------------ | ----- |
-    | TBD            |               |       |
-
-??? velum-metric "5XXError"
-
-    #### Metric Name
-
-    `5XXError`
-
-    #### Metric Defaults
-
-    | Alarm Property | Default Value | Notes |
-    | :------------- | :------------ | ----- |
-    | TBD            |               |       |
-
-??? velum-metric "4XXError"
-
-    #### Metric Name
-
-    `4XXError`
-
-    #### Metric Defaults
-
-    | Alarm Property | Default Value | Notes |
-    | :------------- | :------------ | ----- |
-    | TBD            |               |       |
+!!!light Defaults
+| Alarm Property | Default Value | Notes |
+| :------------- | :------------ | ----- |
+| TBD            |               |       |
+!!!

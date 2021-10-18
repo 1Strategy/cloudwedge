@@ -33,15 +33,14 @@ class SQSService(AWSService):
     cloudwatch_dashboard_section_title = "SQS"
     cloudwatch_dimension = "QueueName"
     # Default metric to be used when metrics are not explicit in tags
-    default_metrics = [
-                       "ApproximateNumberOfMessagesVisible", "ApproximateNumberOfMessagesNotVisible", "ApproximateAgeOfOldestMessage", "NumberOfMessagesSent"]
+    default_metrics = ["ApproximateAgeOfOldestMessage", "NumberOfMessagesSent"]
     default_dashboard_metrics = [
                        "ApproximateNumberOfMessagesVisible", "ApproximateNumberOfMessagesNotVisible", "ApproximateAgeOfOldestMessage"]
     # Alarm defaults for the service, applied if metric default doesnt exist
     default_alarm_props = {
-        # 'EvaluationPeriods': "5",
+        'EvaluationPeriods': "6",
         'Statistic': "Sum",
-        'Period': "60",
+        'Period': "3600",
         # "ComparisonOperator": "GreaterThanOrEqualToThreshold"
         # "TreatMissingData": None
     }
@@ -53,8 +52,12 @@ class SQSService(AWSService):
         'ApproximateNumberOfMessagesNotVisible': {
         },
         'ApproximateAgeOfOldestMessage': {
+            'Threshold': 3600 * 24,
+            'ComparisonOperator': "GreaterThanOrEqualToThreshold"
         },
         'NumberOfMessagesSent': {
+            'Threshold': 0,
+            'ComparisonOperator': "LessThanOrEqualToThreshold"
         },
     }
 

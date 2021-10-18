@@ -1,6 +1,10 @@
 ---
-title: Step Functions
+label: Step Functions
 ---
+
+# Step Functions
+
+[!badge icon="check-circle" text="Stable" variant="success"]
 
 ## CloudWatch Configuration
 
@@ -18,7 +22,9 @@ When an alarm is created it will first review the service defaults to populate t
 | :------------- | :------------ |
 | **Statistic**  | `Sum`         |
 
-## Default Metrics
+## Default Alarm Metrics
+
+Unless there is a tag override, each state machine that is monitored will be bootstrapped with the default alarm metrics.
 
 - `ExecutionsFailed`
 - `ExecutionThrottled`
@@ -26,86 +32,52 @@ When an alarm is created it will first review the service defaults to populate t
 
 ## Supported Metrics
 
-??? velum-metric "ExecutionsStarted"
+### `ExecutionsStarted`
 
-    #### Metric Name
+!!!light Defaults
+| Alarm Property | Default Value | Notes |
+| :------------- | :------------ | ----- |
+| TBD            |               |       |
+!!!
+### `ExecutionThrottled`
 
-    `ExecutionsStarted`
+!!!light Defaults
+| Alarm Property | Default Value | Notes |
+| :------------- | :------------ | ----- |
+| TBD            |               |       |
+!!!
+### `ExecutionsAborted`
 
-    #### Metric Defaults
+!!!light Defaults
+| Alarm Property | Default Value | Notes |
+| :------------- | :------------ | ----- |
+| TBD            |               |       |
+!!!
+### `ExecutionsSucceeded`
 
-    | Alarm Property | Default Value | Notes |
-    | :------------- | :------------ | ----- |
-    | TBD            |               |       |
+!!!light Defaults
+| Alarm Property | Default Value | Notes |
+| :------------- | :------------ | ----- |
+| TBD            |               |       |
+!!!
+### `ExecutionsFailed`
 
-??? velum-metric "ExecutionThrottled"
+!!!light Defaults
+| Alarm Property | Default Value | Notes |
+| :------------- | :------------ | ----- |
+| TBD            |               |       |
+!!!
+### `ExecutionsTimedOut`
 
-    #### Metric Name
+!!!light Defaults
+| Alarm Property | Default Value | Notes |
+| :------------- | :------------ | ----- |
+| TBD            |               |       |
+!!!
+### `ExecutionTime`
 
-    `ExecutionThrottled`
-
-    #### Metric Defaults
-
-    | Alarm Property | Default Value | Notes |
-    | :------------- | :------------ | ----- |
-    | TBD            |               |       |
-
-??? velum-metric "ExecutionsAborted"
-
-    #### Metric Name
-
-    `ExecutionsAborted`
-
-    #### Metric Defaults
-
-    | Alarm Property | Default Value | Notes |
-    | :------------- | :------------ | ----- |
-    | TBD            |               |       |
-
-??? velum-metric "ExecutionsSucceeded"
-
-    #### Metric Name
-
-    `ExecutionsSucceeded`
-
-    #### Metric Defaults
-
-    | Alarm Property | Default Value | Notes |
-    | :------------- | :------------ | ----- |
-    | TBD            |               |       |
-
-??? velum-metric "ExecutionsFailed"
-
-    #### Metric Name
-
-    `ExecutionsFailed`
-
-    #### Metric Defaults
-
-    | Alarm Property | Default Value | Notes |
-    | :------------- | :------------ | ----- |
-    | TBD            |               |       |
-
-??? velum-metric "ExecutionsTimedOut"
-
-    #### Metric Name
-
-    `ExecutionsTimedOut`
-
-    #### Metric Defaults
-
-    | Alarm Property | Default Value | Notes |
-    | :------------- | :------------ | ----- |
-    | TBD            |               |       |
-
-??? velum-metric "ExecutionTime"
-
-    #### Metric Name
-
-    `ExecutionTime`
-
-    #### Metric Defaults
-
-    | Alarm Property | Default Value | Notes |
-    | :------------- | :------------ | ----- |
-    | TBD            |               |       |
+!!!light Defaults
+| Alarm Property | Default Value | Notes |
+| :------------- | :------------ | ----- |
+| TBD            |               |       |
+!!!

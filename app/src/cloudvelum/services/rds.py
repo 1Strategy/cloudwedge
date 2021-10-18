@@ -6,13 +6,14 @@ outlined in cloudvelum.models.AWSService
 """
 
 import os
+from typing import Any, Dict, List
+
 import boto3
 import jmespath
-from typing import List, Any, Dict
 
+from cloudvelum.models import AWSResource, AWSService
 from cloudvelum.utils.logger import get_logger
 from cloudvelum.utils.tags import TagsApi
-from cloudvelum.models import AWSService, AWSResource
 
 LOGGER = get_logger('cloudvelum.rds')
 

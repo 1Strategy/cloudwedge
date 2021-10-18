@@ -1,6 +1,10 @@
 ---
-title: RDS
+label: RDS
 ---
+
+# RDS
+
+[!badge icon="check-circle" text="Stable" variant="success"]
 
 ## CloudWatch Configuration
 
@@ -20,7 +24,9 @@ When an alarm is created it will first review the service defaults to populate t
 | **Statistic**         | `Average`     |
 | **Period**            | `60`          |
 
-## Default Metrics
+## Default Alarm Metrics
+
+Unless there is a tag override, each database that is monitored will be bootstrapped with the default alarm metrics.
 
 - `CPUUtilization`
 - `FreeableMemory`
@@ -28,42 +34,32 @@ When an alarm is created it will first review the service defaults to populate t
 
 ## Supported Metrics
 
-??? velum-metric "CPUUtilization"
 
-    #### Metric Name
+### `CPUUtilization`
 
-    `CPUUtilization`
+!!!light Defaults
+| Alarm Property         | Default Value                   | Notes                                                              |
+| :--------------------- | :------------------------------ | ------------------------------------------------------------------ |
+| **Threshold**          | `90`                            | Threshold represents a percentage of CPU                           |
+| **TreatMissingData**   | `breaching`                     | If we dont get data it could be a sign the the CPU is overwhelmed. |
+| **ComparisonOperator** | `GreaterThanOrEqualToThreshold` |                                                                    |
+!!!
 
-    #### Metric Defaults
+### `FreeableMemory`
 
-    | Alarm Property         | Default Value                   | Notes                                                              |
-    | :--------------------- | :------------------------------ | ------------------------------------------------------------------ |
-    | **Threshold**          | `90`                            | Threshold represents a percentage of CPU                           |
-    | **TreatMissingData**   | `breaching`                     | If we dont get data it could be a sign the the CPU is overwhelmed. |
-    | **ComparisonOperator** | `GreaterThanOrEqualToThreshold` |                                                                    |
+!!!light Defaults
+| Alarm Property         | Default Value                | Notes |
+| :--------------------- | :--------------------------- | ----- |
+| **Threshold**          | `100000000`                  |       |
+| **ComparisonOperator** | `LessThanOrEqualToThreshold` |       |
 
-??? velum-metric "FreeableMemory"
+!!!
 
-    #### Metric Name
+### `FreeStorageSpace`
 
-    `FreeableMemory`
-
-    #### Metric Defaults
-
-    | Alarm Property         | Default Value                | Notes |
-    | :--------------------- | :--------------------------- | ----- |
-    | **Threshold**          | `100000000`                  |       |
-    | **ComparisonOperator** | `LessThanOrEqualToThreshold` |       |
-
-??? velum-metric "FreeStorageSpace"
-
-    #### Metric Name
-
-    `FreeStorageSpace`
-
-    #### Metric Defaults
-
-    | Alarm Property         | Default Value                | Notes |
-    | :--------------------- | :--------------------------- | ----- |
-    | **Threshold**          | `500000000`                  |       |
-    | **ComparisonOperator** | `LessThanOrEqualToThreshold` |       |
+!!!light Defaults
+| Alarm Property         | Default Value                | Notes |
+| :--------------------- | :--------------------------- | ----- |
+| **Threshold**          | `500000000`                  |       |
+| **ComparisonOperator** | `LessThanOrEqualToThreshold` |       |
+!!!

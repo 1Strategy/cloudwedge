@@ -1,6 +1,1 @@
-{
-  "stackName": "cloudvelum-autogen-mango-dashboard-stack",
-  "s3TemplateKey": "templates/cloudvelum-autogen-mango-dashboard-stack/1600799938/template.json",
-  "stackType": "dashboard",
-  "stackOwner": "mango"
-}
+{"stackName": "cloudvelum-autogen-cloudvelum-dashboard-stack", "s3TemplateKey": "templates/cloudvelum-autogen-cloudvelum-dashboard-stack/1634360456/template.json", "stackType": "dashboard", "stackOwner": "cloudvelum", "targetAccountId": "263798040661"}

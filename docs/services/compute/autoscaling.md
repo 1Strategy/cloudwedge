@@ -1,6 +1,10 @@
 ---
-title: AutoScaling
+label: AutoScaling
 ---
+
+# AutoScaling
+
+[!badge icon="tools" text="In Progress" variant="warning"]
 
 ## CloudWatch Configuration
 
@@ -21,96 +25,22 @@ When an alarm is created it will first review the service defaults to populate t
 | **Period**             | `300`                           |
 | **ComparisonOperator** | `GreaterThanOrEqualToThreshold` |
 
-## Default Metrics
+## Default Alarm Metrics
+
+Unless there is a tag override, each group that is monitored will be bootstrapped with the default alarm metrics.
 
 - `CPUUtilization`
 - `NetworkIn`
 - `NetworkOut`
 
+
 ## Supported Metrics
 
-??? velum-metric "CPUUtilization"
+### `NumberOfMessagesSent`
 
-    #### Metric Name
-
-    `CPUUtilization`
-
-    #### Metric Defaults
-
-    | Alarm Property | Default Value | Notes                                    |
-    | :------------- | :------------ | ---------------------------------------- |
-    | **Threshold**  | `85`          | Threshold represents a percentage of CPU |
-
-??? velum-metric "StatusCheckFailed_Instance"
-
-    #### Metric Name
-
-    `StatusCheckFailed_Instance`
-
-    #### Metric Defaults
-
-    | Alarm Property        | Default Value | Notes                        |
-    | :-------------------- | :------------ | ---------------------------- |
-    | **Threshold**         | `1`           | This is a count of failures. |
-    | **EvaluationPeriods** | `3`           |                              |
-
-??? velum-metric "StatusCheckFailed_System"
-
-    #### Metric Name
-
-    `StatusCheckFailed_System`
-
-    #### Metric Defaults
-
-    | Alarm Property        | Default Value | Notes                        |
-    | :-------------------- | :------------ | ---------------------------- |
-    | **Threshold**         | `1`           | This is a count of failures. |
-    | **EvaluationPeriods** | `2`           |                              |
-
-??? velum-metric "DiskReadOps"
-
-    #### Metric Name
-
-    `DiskReadOps`
-
-    #### Metric Defaults
-
-    | Alarm Property | Default Value | Notes  |
-    | :------------- | :------------ | ------ |
-    | **Threshold**  | `5000`        | Count |
-
-??? velum-metric "DiskWriteOps"
-
-    #### Metric Name
-
-    `DiskWriteOps`
-
-    #### Metric Defaults
-
-    | Alarm Property | Default Value | Notes  |
-    | :------------- | :------------ | ------ |
-    | **Threshold**  | `5000`        | Count |
-
-??? velum-metric "NetworkIn"
-
-    #### Metric Name
-
-    `NetworkIn`
-
-    #### Metric Defaults
-
-    | Alarm Property | Default Value | Notes  |
-    | :------------- | :------------ | ------ |
-    | **Threshold**  | `1000000`        | Count |
-
-??? velum-metric "NetworkOut"
-
-    #### Metric Name
-
-    `NetworkOut`
-
-    #### Metric Defaults
-
-    | Alarm Property | Default Value | Notes  |
-    | :------------- | :------------ | ------ |
-    | **Threshold**  | `1000000`        | Count |
+!!!light Defaults
+| Alarm Property         | Default Value                   | Notes                                                              |
+| :--------------------- | :------------------------------ | ------------------------------------------------------------------ |
+| **Threshold**          | `0`                            | Threshold represents a sum of messages                         |
+| **ComparisonOperator** | `LessThanOrEqualToThreshold` |                                                                    |
+!!!
