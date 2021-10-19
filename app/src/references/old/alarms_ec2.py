@@ -16,12 +16,12 @@ class EC2AlarmBase(object):
         # Set Instance Values
         self.instance_id = instance['InstanceId']
         self.instance_detailed_monitoring = instance['DetailedMonitoring']
-        self.resource_unique_name = f"{self.instance_id.split('-')[1]}CloudVelum{self.metric.replace('_', '')}"
+        self.resource_unique_name = f"{self.instance_id.split('-')[1]}CloudWedge{self.metric.replace('_', '')}"
         self.instance_name = instance['Name']
         self.instance_is_running = True if instance['State'] == 'running' else False
 
         # Set Alert Values
-        self.alert_owner = (get_tag_value(self.tags, ENV.TAG_OWNER) or 'cloudvelum').lower()
+        self.alert_owner = (get_tag_value(self.tags, ENV.TAG_OWNER) or 'cloudwedge').lower()
         # Use the supplied level, else get it from tag, or fall back to default
         self.alert_level = (self.level if self.level else get_tag_value(self.tags, ENV.TAG_LEVEL) or 'medium').lower()
         self.alert_topic = ENV.HUB_INGEST_TOPIC

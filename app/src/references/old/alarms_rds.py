@@ -21,7 +21,7 @@ class RDSAlarmBase(object):
         self.db_engine = instance.get('Engine', '')
 
         # Set Alert Values
-        self.alert_owner = (get_tag_value(self.tags, ENV.TAG_OWNER) or 'cloudvelum').lower()
+        self.alert_owner = (get_tag_value(self.tags, ENV.TAG_OWNER) or 'cloudwedge').lower()
         # Use the supplied level, else get it from tag, or fall back to default
         self.alert_level = (self.level if self.level else get_tag_value(self.tags, ENV.TAG_LEVEL) or 'medium').lower()
         self.alert_topic = ENV.HUB_INGEST_TOPIC
@@ -66,7 +66,7 @@ class RDSCPUUtilization(RDSAlarmBase):
     def set_yaml(self):
         # Yaml is indented 1 unit, to match under the parents Resource block
         self.template = f"""
-    {self.resource_unique_name}CloudVelumRDSCPUUtilization:
+    {self.resource_unique_name}CloudWedgeRDSCPUUtilization:
         Type: AWS::CloudWatch::Alarm
         Properties:
             AlarmName: {self.alarm_name}
@@ -107,7 +107,7 @@ class RDSFreeableMemory(RDSAlarmBase):
     def set_yaml(self):
         # Yaml is indented 1 unit, to match under the parents Resource block
         self.template = f"""
-    {self.resource_unique_name}CloudVelumRDSFreeableMemory:
+    {self.resource_unique_name}CloudWedgeRDSFreeableMemory:
         Type: AWS::CloudWatch::Alarm
         Properties:
             AlarmName: {self.alarm_name}
@@ -147,7 +147,7 @@ class RDSFreeStorageSpace(RDSAlarmBase):
     def set_yaml(self):
         # Yaml is indented 1 unit, to match under the parents Resource block
         self.template = f"""
-    {self.resource_unique_name}CloudVelumRDSFreeStorageSpace:
+    {self.resource_unique_name}CloudWedgeRDSFreeStorageSpace:
         Type: AWS::CloudWatch::Alarm
         Properties:
             AlarmName: {self.alarm_name}

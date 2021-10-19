@@ -7,10 +7,10 @@ Get a list of resources for the supported services based on tags criteria
 import itertools
 from typing import Dict, List
 
-from cloudvelum.models import AWSResource
-from cloudvelum.services import ServiceRegistry
-from cloudvelum.utils.logger import get_logger
-from cloudvelum.utils.sts import get_spoke_session
+from cloudwedge.models import AWSResource
+from cloudwedge.services import ServiceRegistry
+from cloudwedge.utils.logger import get_logger
+from cloudwedge.utils.sts import get_spoke_session
 
 LOGGER = get_logger('GetResources')
 
@@ -53,12 +53,15 @@ class GetResources():
 
         # Get resources for each supported service
         for service in supported_services:  # [EC2Service, RDSService, etc..]
+
             # Get the services name
             service_name: str = service.name
+
             # Get the resources
             service_resources = service.get_resources(session=SESSION)
 
-            # If we get any reasources for any service, toggle is_empty
+
+            # If we get any resources for any service, toggle is_empty
             if self.is_empty and len(service_resources) > 0:
                 self.is_empty = False
 

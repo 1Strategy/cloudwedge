@@ -8,23 +8,23 @@
 buildDir=.build
 tempLayerDir=$buildDir/layer
 
-# Copy cloudvelum layer src to a temp folder, so we can get the
-# layer with the 'cloudvelum' layer still intact
-mkdir -p $tempLayerDir && cp -r app/src/cloudvelum $tempLayerDir
+# Copy cloudwedge layer src to a temp folder, so we can get the
+# layer with the 'cloudwedge' layer still intact
+mkdir -p $tempLayerDir && cp -r app/src/cloudwedge $tempLayerDir
 
 # The req file needs to be up 1 level
-mv $tempLayerDir/cloudvelum/requirements.txt $tempLayerDir/
+mv $tempLayerDir/cloudwedge/requirements.txt $tempLayerDir/
 # touch $tempLayerDir/requirements.txt
 
 # If a particular function was given as $1, just build that
 # this is used in the package.json configurations to speed
 # up running functions locally
 if [ -n "$1" ]; then
-    sam build $1 --template-file app/cloudvelum.yaml
+    sam build $1 --template-file app/cloudwedge.yaml
 # Build all the functions and layer from the yaml
 # this is done when you need to build the real deal
 else
-    sam build --template-file app/cloudvelum.yaml
+    sam build --template-file app/cloudwedge.yaml
 fi
 
 # Clear out the build, we dont need it anymore

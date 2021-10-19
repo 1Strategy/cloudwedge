@@ -4,7 +4,7 @@
 </p>
 
 <p align="center">
-    <em>CloudVelum is an AWS Cloudwatch monitoring framework that accelerates your ability to get up and running with native AWS monitoring services.</em>
+    <em>CloudWedge is an AWS Cloudwatch monitoring framework that accelerates your ability to get up and running with native AWS monitoring services.</em>
 </p>
 
 
@@ -12,38 +12,38 @@
 <p align="center" style="margin-top: 2rem; margin-bottom: 2rem; font-size: 2rem;">How it works</p>
 
 <p align="center">
-  <img width="100%" src="docs/assets/cloudvelum-howto.png">
+  <img width="100%" src="docs/assets/cloudwedge-howto.png">
 </p>
 
 
 <div align="center" style=" margin-bottom: 4rem;" >
   <h3>
-    Deploy CloudVelum 🚀
+    Deploy CloudWedge 🚀
   </h3>
   <h5>
 
-[Deply to Oregon (us-west-2)](https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/create/template?stackName=cloudvelum&templateURL=https://cloudvelum-public-artifacts-us-west-2.s3-us-west-2.amazonaws.com/public/cloudvelum/latest/cloudvelum.yaml)
+[Deply to Oregon (us-west-2)](https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts-us-west-2.s3-us-west-2.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml)
   </h5>
   <h5>
 
-[Deply to N. Virginia (us-east-1)](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/template?stackName=cloudvelum&templateURL=https://cloudvelum-public-artifacts-us-east-1.s3-us-east-1.amazonaws.com/public/cloudvelum/latest/cloudvelum.yaml)
+[Deply to N. Virginia (us-east-1)](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts-us-east-1.s3-us-east-1.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml)
   </h5>
   <h5>
 
-[Deply to Ohio (us-east-2)](https://us-east-2.console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/create/template?stackName=cloudvelum&templateURL=https://cloudvelum-public-artifacts-us-east-2.s3-us-east-2.amazonaws.com/public/cloudvelum/latest/cloudvelum.yaml)
+[Deply to Ohio (us-east-2)](https://us-east-2.console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts-us-east-2.s3-us-east-2.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml)
   </h5>
 </div>
 
 
-# CloudVelum
+# CloudWedge
 
-<p align="center" style="margin-top: 2rem; margin-bottom: 4rem;"><strong>View Documentation</strong>: <a href="http://cloudvelum.1strategy.com" target="_blank">https://cloudvelum.1strategy.com</a>
+<p align="center" style="margin-top: 2rem; margin-bottom: 4rem;"><strong>View Documentation</strong>: <a href="http://cloudwedge.1strategy.com" target="_blank">https://cloudwedge.1strategy.com</a>
 </p>
 
 
 ## Roadmap Ideas
 
-- Add more AWS services (`app/src/cloudvelum/services`)
+- Add more AWS services (`app/src/cloudwedge/services`)
 - Add multi account and multi region dashboard views
 - Review permissions
 - Provide custom dashboard that is deployed into local dns
@@ -53,10 +53,10 @@
 
 ```bash
 |-- app
-|   |-- cloudvelum-spoke.yaml                 # Spoke template, deloyed from stackset resource in cloudvelum.yaml file
-|   |-- cloudvelum.yaml                       # Core template. This is the magic.
+|   |-- cloudwedge-spoke.yaml                 # Spoke template, deloyed from stackset resource in cloudwedge.yaml file
+|   |-- cloudwedge.yaml                       # Core template. This is the magic.
 |   |-- resources                             # Step function json configurations
-|   `-- src                                   # CloudVelum lambda functions and logc
+|   `-- src                                   # CloudWedge lambda functions and logc
 |-- package.json                              # Standard use, look here for all the scripts you can run
 |-- publishing
 |   |-- media                                 # Various images and media assests used in the app, published to s3
@@ -74,7 +74,7 @@ The application is orchestrated with a step function, so to run it locally requi
 
 Check out the package.json file for running the functions. You can see the AWS SAM resource listed under the script. Such as
 
-`npm run local:get` runs the lambda resource defined in the `cloudvelum.yaml` file called `GetResourcesFunction`
+`npm run local:get` runs the lambda resource defined in the `cloudwedge.yaml` file called `GetResourcesFunction`
 
 ### Debug locally
 
@@ -104,7 +104,7 @@ You can use the built in vscode debugger to get the step through debugging exper
 
 #### AWS
 
-- [YAML references](https://github.com/dwbelliston/cloudvelum/blob/bdd5864d72f2d25ca90a4d8b39a94c352a1df089/orig/stacks/hub.yaml)
+- [YAML references](https://github.com/dwbelliston/cloudwedge/blob/bdd5864d72f2d25ca90a4d8b39a94c352a1df089/orig/stacks/hub.yaml)
 - [Step Function Iam for Sub Workflows](https://docs.aws.amazon.com/step-functions/latest/dg/stepfunctions-iam.html)
 - [Using Sub Workflows](https://docs.aws.amazon.com/step-functions/latest/dg/connect-stepfunctions.html)
 - [More Sub Workflows](https://docs.aws.amazon.com/step-functions/latest/dg/sample-start-workflow.html)

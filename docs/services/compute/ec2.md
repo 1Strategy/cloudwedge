@@ -1,6 +1,10 @@
 ---
-title: EC2
+label: EC2
 ---
+
+# EC2
+
+[!badge icon="check-circle" text="Stable" variant="success"]
 
 ## CloudWatch Configuration
 
@@ -21,7 +25,9 @@ When an alarm is created it will first review the service defaults to populate t
 | **Period**             | `300`                           |
 | **ComparisonOperator** | `GreaterThanOrEqualToThreshold` |
 
-## Default Metrics
+## Default Alarm Metrics
+
+Unless there is a tag override, each instance that is monitored will be bootstrapped with the default alarm metrics.
 
 - `CPUUtilization`
 - `StatusCheckFailed_Instance`
@@ -30,88 +36,61 @@ When an alarm is created it will first review the service defaults to populate t
 
 ## Supported Metrics
 
-??? velum-metric "CPUUtilization"
+### `CPUUtilization`
 
-    #### Metric Name
+!!!light Defaults
+| Alarm Property | Default Value | Notes                                    |
+| :------------- | :------------ | ---------------------------------------- |
+| **Threshold**  | `85`          | Threshold represents a percentage of CPU |
+!!!
 
-    `CPUUtilization`
+### `StatusCheckFailed_Instance`
 
-    #### Metric Defaults
+!!!light Defaults
+| Alarm Property        | Default Value | Notes                        |
+| :-------------------- | :------------ | ---------------------------- |
+| **Threshold**         | `1`           | This is a count of failures. |
+| **EvaluationPeriods** | `3`           |                              |
+!!!
 
-    | Alarm Property | Default Value | Notes                                    |
-    | :------------- | :------------ | ---------------------------------------- |
-    | **Threshold**  | `85`          | Threshold represents a percentage of CPU |
+### `StatusCheckFailed_System`
 
-??? velum-metric "StatusCheckFailed_Instance"
+!!!light Defaults
+| Alarm Property        | Default Value | Notes                        |
+| :-------------------- | :------------ | ---------------------------- |
+| **Threshold**         | `1`           | This is a count of failures. |
+| **EvaluationPeriods** | `2`           |                              |
+!!!
 
-    #### Metric Name
+### `DiskReadOps`
 
-    `StatusCheckFailed_Instance`
+!!!light Defaults
+| Alarm Property | Default Value | Notes  |
+| :------------- | :------------ | ------ |
+| **Threshold**  | `5000`        | Count |
+!!!
 
-    #### Metric Defaults
+### `DiskWriteOps`
 
-    | Alarm Property        | Default Value | Notes                        |
-    | :-------------------- | :------------ | ---------------------------- |
-    | **Threshold**         | `1`           | This is a count of failures. |
-    | **EvaluationPeriods** | `3`           |                              |
+!!!light Defaults
 
-??? velum-metric "StatusCheckFailed_System"
+| Alarm Property | Default Value | Notes  |
+| :------------- | :------------ | ------ |
+| **Threshold**  | `5000`        | Count |
+!!!
 
-    #### Metric Name
+### `NetworkIn`
 
-    `StatusCheckFailed_System`
+!!!light Defaults
+| Alarm Property | Default Value | Notes  |
+| :------------- | :------------ | ------ |
+| **Threshold**  | `1000000`        | Count |
+!!!
 
-    #### Metric Defaults
+### `NetworkOut`
 
-    | Alarm Property        | Default Value | Notes                        |
-    | :-------------------- | :------------ | ---------------------------- |
-    | **Threshold**         | `1`           | This is a count of failures. |
-    | **EvaluationPeriods** | `2`           |                              |
-
-??? velum-metric "DiskReadOps"
-
-    #### Metric Name
-
-    `DiskReadOps`
-
-    #### Metric Defaults
-
-    | Alarm Property | Default Value | Notes  |
-    | :------------- | :------------ | ------ |
-    | **Threshold**  | `5000`        | Count |
-
-??? velum-metric "DiskWriteOps"
-
-    #### Metric Name
-
-    `DiskWriteOps`
-
-    #### Metric Defaults
-
-    | Alarm Property | Default Value | Notes  |
-    | :------------- | :------------ | ------ |
-    | **Threshold**  | `5000`        | Count |
-
-??? velum-metric "NetworkIn"
-
-    #### Metric Name
-
-    `NetworkIn`
-
-    #### Metric Defaults
-
-    | Alarm Property | Default Value | Notes  |
-    | :------------- | :------------ | ------ |
-    | **Threshold**  | `1000000`        | Count |
-
-??? velum-metric "NetworkOut"
-
-    #### Metric Name
-
-    `NetworkOut`
-
-    #### Metric Defaults
-
-    | Alarm Property | Default Value | Notes  |
-    | :------------- | :------------ | ------ |
-    | **Threshold**  | `1000000`        | Count |
+!!!light Defaults
+| Alarm Property | Default Value | Notes  |
+| :------------- | :------------ | ------ |
+| **Threshold**  | `1000000`        | Count |
+!!!

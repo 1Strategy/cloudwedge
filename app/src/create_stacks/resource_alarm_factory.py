@@ -10,9 +10,9 @@ for multiple metrics.
 import hashlib
 from typing import Dict, List
 
-from cloudvelum.models import AWSResource, AWSService
-from cloudvelum.utils.logger import get_logger
-from cloudvelum.utils.tags import TagsApi
+from cloudwedge.models import AWSResource, AWSService
+from cloudwedge.utils.logger import get_logger
+from cloudwedge.utils.tags import TagsApi
 
 LOGGER = get_logger("ResourceAlarmFactory")
 
@@ -130,11 +130,11 @@ class ResourceAlarmFactory():
         # Make Unique resource name for the template resource
         clean_metric_name = self._clean_value(metric)
         clean_resource_id = self._clean_value(self.resource['uniqueId'])
-        unique_resource_name = f"{self._hash_for_identifier(self.resource['uniqueId'])}CloudVelum{clean_metric_name}"
+        unique_resource_name = f"{self._hash_for_identifier(self.resource['uniqueId'])}CloudWedge{clean_metric_name}"
         # Get alarm level
         alert_level = level
         # Make alarm name, using unique name
-        alarm_name = f"cloudvelum-autogen-{self.service.name}-{self.resource['owner']}-{alert_level}-{clean_metric_name}-{clean_resource_id}"
+        alarm_name = f"cloudwedge-autogen-{self.service.name}-{self.resource['owner']}-{alert_level}-{clean_metric_name}-{clean_resource_id}"
         # Make alarm description, Key=Value format is parsed when notifications are sent
         # Space at end of each line is important
         alarm_description = (

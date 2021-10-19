@@ -40,7 +40,7 @@
       "tags": [
         {
           "propagateAtLaunch": true,
-          "key": "cloudvelum:level",
+          "key": "cloudwedge:level",
           "value": "critical",
           "resourceType": "auto-scaling-group",
           "resourceId": "msa-plmss-ratabase"

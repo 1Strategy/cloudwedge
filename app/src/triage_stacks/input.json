@@ -11,25 +11,25 @@
       "arn:aws:lambda:us-west-2:ACCOUNTID:function:teardown_step_functions"
     ],
     "detail": {
-      "changed-tag-keys": ["cloudvelum:active"],
+      "changed-tag-keys": ["cloudwedge:active"],
       "service": "lambda",
       "resource-type": "function",
       "version": 6,
-      "tags": { "cloudvelum:active": "trues" }
+      "tags": { "cloudwedge:active": "trues" }
     }
   },
   "targetAccountId": "ACCOUNTID",
   "ownerResources": {
-    "cloudvelum": {
+    "cloudwedge": {
       "ec2": [
         {
           "service": "ec2",
           "name": null,
           "uniqueId": "i-0588d57988d34fa26",
           "cloudwatchDimensionId": "i-0588d57988d34fa26",
-          "owner": "cloudvelum",
+          "owner": "cloudwedge",
           "tags": [
-            { "Key": "cloudvelum:active", "Value": "true" },
+            { "Key": "cloudwedge:active", "Value": "true" },
             { "Key": "user-discovery:user", "Value": "dustin@1strategy.com" }
           ],
           "ec2State": "running",

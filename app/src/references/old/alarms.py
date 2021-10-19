@@ -18,7 +18,7 @@ class MetricMaker(object):
             alarm_class = RDSAlarms
         else:
             # Raise error that service is not supported
-            raise UnsupportedService(f'CloudVelum does not support service [{service}]')
+            raise UnsupportedService(f'CloudWedge does not support service [{service}]')
 
         try:
             cfn_metric_maker = getattr(alarm_class, f'{service.upper()}{metric}')

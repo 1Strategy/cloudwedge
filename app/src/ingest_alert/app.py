@@ -1,7 +1,7 @@
 """
 IngestAlert
 
-Ingest alert from an cloudvelum cloudwatch alarm, standardize the event
+Ingest alert from an cloudwedge cloudwatch alarm, standardize the event
 and send to alerting step function
 """
 import os
@@ -12,8 +12,8 @@ import time
 import boto3
 from botocore.exceptions import ClientError
 
-from cloudvelum.models import AWSService
-from cloudvelum.utils.logger import get_logger
+from cloudwedge.models import AWSService
+from cloudwedge.utils.logger import get_logger
 
 LOGGER = get_logger('IngestAlert')
 

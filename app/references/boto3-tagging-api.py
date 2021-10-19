@@ -22,10 +22,10 @@ import itertools
 from typing import Dict, List
 
 import boto3
-from cloudvelum.models import AWSResource, AWSService
-from cloudvelum.services import ServiceRegistry
-from cloudvelum.utils.arnparse import arnparse
-from cloudvelum.utils.logger import get_logger
+from cloudwedge.models import AWSResource, AWSService
+from cloudwedge.services import ServiceRegistry
+from cloudwedge.utils.arnparse import arnparse
+from cloudwedge.utils.logger import get_logger
 
 LOGGER = get_logger('GetResources')
 
@@ -84,7 +84,7 @@ class GetResources():
         for resource in response['ResourceTagMappingList']:
             # {
             #     'ResourceARN': 'arn:aws:ec2:us-west-2:ACCOUNTID:instance/i-07c281f74d763f868',
-            #     'Tags': [{'Key': 'Name', 'Value': 'artillery'}, {'Key': 'cloudvelum:alert:active', 'Value': 'true'}]
+            #     'Tags': [{'Key': 'Name', 'Value': 'artillery'}, {'Key': 'cloudwedge:alert:active', 'Value': 'true'}]
             # }
 
             # Parse arn to get values from it

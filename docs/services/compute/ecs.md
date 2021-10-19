@@ -1,6 +1,10 @@
 ---
-title: ECS
+label: ECS
 ---
+
+# ECS
+
+[!badge icon="tools" text="In Progress" variant="warning"]
 
 ## CloudWatch Configuration
 
@@ -21,69 +25,55 @@ When an alarm is created it will first review the service defaults to populate t
 | **Period**             | `300`                           |
 | **ComparisonOperator** | `GreaterThanOrEqualToThreshold` |
 
-## Default Metrics
+## Default Alarm Metrics
+
+Unless there is a tag override, each cluster that is monitored will be bootstrapped with the default alarm metrics.
 
 - `CPUUtilization`
 - `MemoryUtilization`
 
 ## Supported Metrics
 
-??? velum-metric "CPUUtilization"
+### `CPUUtilization`
 
-    #### Metric Name
+!!!light Defaults
+| Alarm Property | Default Value | Notes                                    |
+| :------------- | :------------ | ---------------------------------------- |
+| **Threshold**  | `85`          | Threshold represents a percentage of CPU |
+!!!
 
-    `CPUUtilization`
+### `MemoryUtilization`
 
-    #### Metric Defaults
+!!!light Defaults
 
-    | Alarm Property | Default Value | Notes                                    |
-    | :------------- | :------------ | ---------------------------------------- |
-    | **Threshold**  | `85`          | Threshold represents a percentage of CPU |
+| Alarm Property | Default Value | Notes                             |
+| :------------- | :------------ | --------------------------------- |
+| **Threshold**  | `70`          | Threshold represents a percentage |
+!!!
 
-??? velum-metric "MemoryUtilization"
+### `CPUReservation`
 
-    #### Metric Name
+!!!light Defaults
 
-    `MemoryUtilization`
+| Alarm Property | Default Value | Notes |
+| :------------- | :------------ | ----- |
+| **TBD**        |               |       |
+!!!
 
-    #### Metric Defaults
+### `MemoryReservation`
 
-    | Alarm Property | Default Value | Notes                             |
-    | :------------- | :------------ | --------------------------------- |
-    | **Threshold**  | `70`          | Threshold represents a percentage |
+!!!light Defaults
 
-??? velum-metric "CPUReservation"
+| Alarm Property | Default Value | Notes |
+| :------------- | :------------ | ----- |
+| **TBD**        |               |       |
+!!!
 
-    #### Metric Name
+### `GPUReservation`
 
-    `CPUReservation`
+!!!light Defaults
 
-    #### Metric Defaults
-
-    | Alarm Property | Default Value | Notes |
-    | :------------- | :------------ | ----- |
-    | **TBD**        |               |       |
-
-??? velum-metric "MemoryReservation"
-
-    #### Metric Name
-
-    `MemoryReservation`
-
-    #### Metric Defaults
-
-    | Alarm Property | Default Value | Notes |
-    | :------------- | :------------ | ----- |
-    | **TBD**        |               |       |
-
-??? velum-metric "GPUReservation"
-
-    #### Metric Name
-
-    `GPUReservation`
-
-    #### Metric Defaults
-
-    | Alarm Property | Default Value | Notes |
-    | :------------- | :------------ | ----- |
-    | **TBD**        |               |       |
+| Alarm Property | Default Value | Notes |
+| :------------- | :------------ | ----- |
+| **TBD**        |               |       |
+!!!

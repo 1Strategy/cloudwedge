@@ -1,6 +1,10 @@
 ---
-title: ElasticBeanstalk
+label: ElasticBeanstalk
 ---
+
+# ElasticBeanstalk
+
+[!badge icon="tools" text="In Progress" variant="warning"]
 
 ## CloudWatch Configuration
 
@@ -18,7 +22,9 @@ When an alarm is created it will first review the service defaults to populate t
 | :--------------------- | :------------------------------ |
 | **Statistic**          | `Average`                       |
 
-## Default Metrics
+## Default Alarm Metrics
+
+Unless there is a tag override, each resource that is monitored will be bootstrapped with the default alarm metrics.
 
 - `ApplicationRequests2xx`
 - `ApplicationRequests3xx`
@@ -27,50 +33,34 @@ When an alarm is created it will first review the service defaults to populate t
 
 ## Supported Metrics
 
-??? velum-metric "ApplicationRequests2xx"
+### `ApplicationRequests2xx`
 
-    #### Metric Name
+!!!light defaults
+| Alarm Property | Default Value | Notes                                    |
+| :------------- | :------------ | ---------------------------------------- |
+| TBD  |           |  |
+!!!
 
-    `ApplicationRequests2xx`
+### `ApplicationRequests3xx`
 
-    #### Metric Defaults
+!!!light defaults
+| Alarm Property | Default Value | Notes                                    |
+| :------------- | :------------ | ---------------------------------------- |
+| TBD  |           |  |
+!!!
 
-    | Alarm Property | Default Value | Notes                                    |
-    | :------------- | :------------ | ---------------------------------------- |
-    | TBD  |           |  |
+### `ApplicationRequests4xx`
 
-??? velum-metric "ApplicationRequests3xx"
+!!!light defaults
+| Alarm Property | Default Value | Notes                                    |
+| :------------- | :------------ | ---------------------------------------- |
+| TBD  |           |  |
+!!!
 
-    #### Metric Name
+### `ApplicationRequests5xx`
 
-    `ApplicationRequests3xx`
-
-    #### Metric Defaults
-
-    | Alarm Property | Default Value | Notes                                    |
-    | :------------- | :------------ | ---------------------------------------- |
-    | TBD  |           |  |
-
-??? velum-metric "ApplicationRequests4xx"
-
-    #### Metric Name
-
-    `ApplicationRequests4xx`
-
-    #### Metric Defaults
-
-    | Alarm Property | Default Value | Notes                                    |
-    | :------------- | :------------ | ---------------------------------------- |
-    | TBD  |           |  |
-
-??? velum-metric "ApplicationRequests5xx"
-
-    #### Metric Name
-
-    `ApplicationRequests5xx`
-
-    #### Metric Defaults
-
-    | Alarm Property | Default Value | Notes                                    |
-    | :------------- | :------------ | ---------------------------------------- |
-    | TBD  |           |  |
+!!!light defaults
+| Alarm Property | Default Value | Notes                                    |
+| :------------- | :------------ | ---------------------------------------- |
+| TBD  |           |  |
+!!!

@@ -1,12 +1,12 @@
 # Goal
 
-Setup infrastrcture to delivery cloudvelum cloudformation template to s3, so users can just use that s3 url and create a stack from it
+Setup infrastrcture to delivery cloudwedge cloudformation template to s3, so users can just use that s3 url and create a stack from it
 
 
 - Will eventually have this in a public/prod bucket , but for now just run in sandbox
-- Need a bucket to hold the cloudvelum versions
-- Needs a bucket to hold the cloudvelum 'media artifacts' - these are images that are used by cloudvelum to display on a dashboard or as an icon in a slack message - basically these just need to be synced up to the bucket and then we can reference the urls
-- the cloudvelum versions and the medias assets can be in the same bucket unless we can find a reason why not
+- Need a bucket to hold the cloudwedge versions
+- Needs a bucket to hold the cloudwedge 'media artifacts' - these are images that are used by cloudwedge to display on a dashboard or as an icon in a slack message - basically these just need to be synced up to the bucket and then we can reference the urls
+- the cloudwedge versions and the medias assets can be in the same bucket unless we can find a reason why not
 - Gitlab script! set this up to just run
 
 `/scripts` folder has some scripts i have been workiing on that has basically a POC of this done
