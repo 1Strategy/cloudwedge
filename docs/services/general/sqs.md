@@ -26,7 +26,7 @@ When an alarm is created it will first review the service defaults to populate t
 
 ## Dashboard Widgets
 
-Each queue that is monitored will be added a dashboard with the default widgets.
+Each queue that is monitored will be added to a dashboard with the default widgets.
 
 ![](../../static/services/sqs/dashboard.png)
 

@@ -22,6 +22,10 @@ When an alarm is created it will first review the service defaults to populate t
 | :------------- | :------------ |
 | **Statistic**  | `Sum`         |
 
+Each statemachine that is monitored will be added to a dashboard with the default widgets.
+
+![](../../static/services/sqs/dashboard.png)
+
 ## Default Alarm Metrics
 
 Unless there is a tag override, each state machine that is monitored will be bootstrapped with the default alarm metrics.
