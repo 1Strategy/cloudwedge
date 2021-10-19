@@ -1,6 +1,6 @@
 
 <p align="center">
-  <img width="100%" src="docs/assets/banner.png">
+  <img width="100%" src="docs/static/light-logo-full.svg">
 </p>
 
 <p align="center">
@@ -8,12 +8,10 @@
 </p>
 
 
-
-<p align="center" style="margin-top: 2rem; margin-bottom: 2rem; font-size: 2rem;">How it works</p>
-
 <p align="center">
-  <img width="100%" src="docs/assets/cloudwedge-howto.png">
+  <img width="100%" src="docs/static/wedge-hero.png">
 </p>
+
 
 
 <div align="center" style=" margin-bottom: 4rem;" >
@@ -32,6 +30,7 @@
 
 [Deply to Ohio (us-east-2)](https://us-east-2.console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts-us-east-2.s3-us-east-2.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml)
   </h5>
+
 </div>
 
 
