@@ -1,8 +1,8 @@
 """
-ElasticBeanstalk for CloudVelum
+ElasticBeanstalk for CloudWedge
 
 Provides implementation details for elasticbeanstalk service. It follows contract
-outlined in cloudvelum.models.AWSService
+outlined in cloudwedge.models.AWSService
 """
 
 from os import environ
@@ -10,13 +10,13 @@ import boto3
 import jmespath
 from typing import List, Any, Dict, Optional
 
-from cloudvelum.utils.logger import get_logger
-from cloudvelum.utils.tags import TagsApi
-from cloudvelum.models import AWSService, AWSResource
+from cloudwedge.utils.logger import get_logger
+from cloudwedge.utils.tags import TagsApi
+from cloudwedge.models import AWSService, AWSResource
 
 REGION = environ.get('REGION')
 
-LOGGER = get_logger("cloudvelum.elasticbeanstalk")
+LOGGER = get_logger("cloudwedge.elasticbeanstalk")
 
 
 # Model for Service, extending AWSResource
@@ -86,7 +86,7 @@ class ElasticBeanstalkService(AWSService):
                     # If the active monitoring tag is on the instance, include in resource collection
                     # Stripping key so no whitespace mismatch
                     if any((tag['Key'].strip() == AWSService.TAG_ACTIVE and tag['Value'] == 'true') for tag in env_tags):
-                        # This resource has opted in to cloudvelum
+                        # This resource has opted in to cloudwedge
 
                         # Get values from tags if they exist
                         owner_from_tag = TagsApi.get_owner_from_tags(env_tags)

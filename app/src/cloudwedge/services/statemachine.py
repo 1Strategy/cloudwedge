@@ -1,8 +1,8 @@
 """
-StateMachine for CloudVelum
+StateMachine for CloudWedge
 
 Provides implementation details for statemachine service. It follows contract
-outlined in cloudvelum.models.AWSService
+outlined in cloudwedge.models.AWSService
 """
 
 from os import environ
@@ -11,13 +11,13 @@ from typing import Any, Dict, List, Optional
 import boto3
 import jmespath
 
-from cloudvelum.models import AWSResource, AWSService
-from cloudvelum.utils.logger import get_logger
-from cloudvelum.utils.tags import TagsApi
+from cloudwedge.models import AWSResource, AWSService
+from cloudwedge.utils.logger import get_logger
+from cloudwedge.utils.tags import TagsApi
 
 REGION = environ.get('REGION')
 
-LOGGER = get_logger("cloudvelum.statemachine")
+LOGGER = get_logger("cloudwedge.statemachine")
 
 
 # Model for Service, extending AWSResource
@@ -99,7 +99,7 @@ class StateMachineService(AWSService):
                     # If the active monitoring tag is on the instance, include in resource collection
                     # Stripping key so no whitespace mismatch
                     if any((tag['Key'].strip() == AWSService.TAG_ACTIVE and tag['Value'] == 'true') for tag in converted_tags):
-                        # This resource has opted in to cloudvelum
+                        # This resource has opted in to cloudwedge
 
                         # Get values from tags if they exist
                         owner_from_tag = TagsApi.get_owner_from_tags(converted_tags)

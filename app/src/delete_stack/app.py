@@ -5,8 +5,8 @@ Deletes a cloudformation stack by its name
 """
 
 from botocore.exceptions import WaiterError
-from cloudvelum.utils.logger import get_logger
-from cloudvelum.utils.sts import get_spoke_session
+from cloudwedge.utils.logger import get_logger
+from cloudwedge.utils.sts import get_spoke_session
 
 LOGGER = get_logger('DeleteStack')
 

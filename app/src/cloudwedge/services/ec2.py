@@ -1,8 +1,8 @@
 """
-EC2 for CloudVelum
+EC2 for CloudWedge
 
 Provides implementation details for ec2 service. It follows contract
-outlined in cloudvelum.models.AWSService
+outlined in cloudwedge.models.AWSService
 """
 
 from os import environ
@@ -10,13 +10,13 @@ import boto3
 import jmespath
 from typing import List, Any, Dict, Optional
 
-from cloudvelum.utils.logger import get_logger
-from cloudvelum.utils.tags import TagsApi
-from cloudvelum.models import AWSService, AWSResource
+from cloudwedge.utils.logger import get_logger
+from cloudwedge.utils.tags import TagsApi
+from cloudwedge.models import AWSService, AWSResource
 
 REGION = environ.get('REGION')
 
-LOGGER = get_logger('cloudvelum.ec2')
+LOGGER = get_logger('cloudwedge.ec2')
 
 
 # Model for Service, extending AWSResource
@@ -141,7 +141,7 @@ class EC2Service(AWSService):
                 .get_paginator('describe_instances')
                 .paginate(
                     Filters=[
-                        # Filter for only resources that have cloudvelum tag
+                        # Filter for only resources that have cloudwedge tag
                         {'Name': f"tag:{AWSService.TAG_ACTIVE}",
                             'Values': ["true"]},
                         # Additionally, filter to only get instances that are on

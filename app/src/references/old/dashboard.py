@@ -38,8 +38,8 @@ class DashboardMaker(object):
         self.dashboard_values = dashboard_values
 
         # Set Dashboard Values
-        self.resource_unique_name = f'CloudVelum{self.owner}{self.service}Dashboard'
-        self.dashboard_name = f'cloudvelum-{self.owner}-{self.service}'
+        self.resource_unique_name = f'CloudWedge{self.owner}{self.service}Dashboard'
+        self.dashboard_name = f'cloudwedge-{self.owner}-{self.service}'
         self.dashboard_body = json.dumps(self.build_dashboard_body()).replace('"', '\\"')
 
         # Set the final template
@@ -72,7 +72,7 @@ class DashboardMaker(object):
                 'width': 24,
                 'height': 2,
                 'properties': {
-                    'markdown': f'# {self.owner}\\n###### CREATED BY CLOUDVELUM'
+                    'markdown': f'# {self.owner}\\n###### CREATED BY CLOUDWEDGE'
                 }
             }
         ]

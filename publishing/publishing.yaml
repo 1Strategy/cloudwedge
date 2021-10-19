@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: >
-  Stack to create infrastructure for publishing CloudVelum.
+  Stack to create infrastructure for publishing CloudWedge.
 
   Resources: [ Public Artifacts Bucket ]
 
@@ -9,7 +9,7 @@ Conditions:
 
 Resources:
 
-  CloudVelumPublicArtifactsBucket:
+  CloudWedgePublicArtifactsBucket:
     Type: AWS::S3::Bucket
     Properties:
       # AccelerateConfiguration:
@@ -21,7 +21,7 @@ Resources:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
               SSEAlgorithm: AES256
-      BucketName: !Sub "cloudvelum-public-artifacts-${AWS::Region}"
+      BucketName: !Sub "cloudwedge-public-artifacts-${AWS::Region}"
       # CorsConfiguration:
       #   CorsConfiguration
       # InventoryConfigurations:
@@ -44,14 +44,14 @@ Resources:
         RestrictPublicBuckets: FALSE
       Tags:
         - Key: app:name
-          Value: cloudvelum
+          Value: cloudwedge
       WebsiteConfiguration:
         IndexDocument: index.html
 
-  CloudVelumPublicArtifactsBucketPolicy:
+  CloudWedgePublicArtifactsBucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
-      Bucket: !Ref CloudVelumPublicArtifactsBucket
+      Bucket: !Ref CloudWedgePublicArtifactsBucket
       PolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -60,9 +60,9 @@ Resources:
             Principal: "*"
             Action: s3:GetObject
             Resource:
-              - !Sub arn:aws:s3:::${CloudVelumPublicArtifactsBucket}/public/*
+              - !Sub arn:aws:s3:::${CloudWedgePublicArtifactsBucket}/public/*
 
-  CloudVelumDocsSandboxBucket:
+  CloudWedgeDocsSandboxBucket:
     Condition: IsUsWest2Region
     Type: AWS::S3::Bucket
     Properties:
@@ -75,7 +75,7 @@ Resources:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
               SSEAlgorithm: AES256
-      BucketName: cloudvelum.1strategy-sandbox.com
+      BucketName: cloudwedge.1strategy-sandbox.com
       # CorsConfiguration:
       #   CorsConfiguration
       # InventoryConfigurations:
@@ -93,15 +93,15 @@ Resources:
         RestrictPublicBuckets: FALSE
       Tags:
         - Key: app:name
-          Value: cloudvelum
+          Value: cloudwedge
       WebsiteConfiguration:
         IndexDocument: index.html
 
-  CloudVelumDocsSandboxBucketPolicy:
+  CloudWedgeDocsSandboxBucketPolicy:
     Condition: IsUsWest2Region
     Type: AWS::S3::BucketPolicy
     Properties:
-      Bucket: !Ref CloudVelumDocsSandboxBucket
+      Bucket: !Ref CloudWedgeDocsSandboxBucket
       PolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -110,9 +110,9 @@ Resources:
             Principal: "*"
             Action: s3:GetObject
             Resource:
-              - !Sub arn:aws:s3:::${CloudVelumDocsSandboxBucket}/*
+              - !Sub arn:aws:s3:::${CloudWedgeDocsSandboxBucket}/*
 
-  CloudVelumDocsBucket:
+  CloudWedgeDocsBucket:
     Condition: IsUsWest2Region
     Type: AWS::S3::Bucket
     Properties:
@@ -125,7 +125,7 @@ Resources:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
               SSEAlgorithm: AES256
-      BucketName: cloudvelum.1strategy.com
+      BucketName: cloudwedge.1strategy.com
       # CorsConfiguration:
       #   CorsConfiguration
       # InventoryConfigurations:
@@ -143,15 +143,15 @@ Resources:
         RestrictPublicBuckets: FALSE
       Tags:
         - Key: app:name
-          Value: cloudvelum
+          Value: cloudwedge
       WebsiteConfiguration:
         IndexDocument: index.html
 
-  CloudVelumDocsBucketPolicy:
+  CloudWedgeDocsBucketPolicy:
     Condition: IsUsWest2Region
     Type: AWS::S3::BucketPolicy
     Properties:
-      Bucket: !Ref CloudVelumDocsBucket
+      Bucket: !Ref CloudWedgeDocsBucket
       PolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -160,15 +160,15 @@ Resources:
             Principal: "*"
             Action: s3:GetObject
             Resource:
-              - !Sub arn:aws:s3:::${CloudVelumDocsBucket}/*
+              - !Sub arn:aws:s3:::${CloudWedgeDocsBucket}/*
 
 
 Outputs:
-  CloudVelumPublicArtifactsBucket:
-    Description: CloudVelum public artifacts bucket
-    Value: !Ref CloudVelumPublicArtifactsBucket
+  CloudWedgePublicArtifactsBucket:
+    Description: CloudWedge public artifacts bucket
+    Value: !Ref CloudWedgePublicArtifactsBucket
 
-  CloudVelumDocsBucket:
+  CloudWedgeDocsBucket:
     Condition: IsUsWest2Region
-    Description: CloudVelum public docs bucket
-    Value: !Ref CloudVelumDocsBucket
+    Description: CloudWedge public docs bucket
+    Value: !Ref CloudWedgeDocsBucket

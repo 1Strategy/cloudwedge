@@ -2,7 +2,7 @@
 import os
 
 import boto3
-from cloudvelum.utils.logger import get_logger
+from cloudwedge.utils.logger import get_logger
 
 # Setup logger
 LOGGER = get_logger('util.s3')

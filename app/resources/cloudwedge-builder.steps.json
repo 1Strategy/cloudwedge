@@ -1,5 +1,5 @@
 {
-  "Comment": "CloudVelum Builder",
+  "Comment": "CloudWedge Builder",
   "StartAt": "GetResources",
   "States": {
     "GetResources": {
@@ -58,7 +58,7 @@
             "Type": "Task",
             "Resource": "arn:aws:states:::states:startExecution.sync",
             "Parameters": {
-              "StateMachineArn": "${CloudVelumBuilderStackStatusStateMachineArn}",
+              "StateMachineArn": "${CloudWedgeBuilderStackStatusStateMachineArn}",
               "Input": {
                 "targetAccountId.$": "$.targetAccountId",
                 "stackStatus.$": "$.stackStatus",
@@ -83,7 +83,7 @@
           },
           "DeleteFailed": {
             "Type": "Fail",
-            "Cause": "CloudVelum vs Hermes didnt end well"
+            "Cause": "CloudWedge vs Hermes didnt end well"
           }
         }
       },
@@ -136,7 +136,7 @@
             "Type": "Task",
             "Resource": "arn:aws:states:::states:startExecution.sync",
             "Parameters": {
-              "StateMachineArn": "${CloudVelumBuilderStackStatusStateMachineArn}",
+              "StateMachineArn": "${CloudWedgeBuilderStackStatusStateMachineArn}",
               "Input": {
                 "stackStatus.$": "$.stackStatus",
                 "targetAccountId.$": "$.targetAccountId",
@@ -161,7 +161,7 @@
           },
           "DeployFailed": {
             "Type": "Fail",
-            "Cause": "CloudVelum vs Hermes didnt end well"
+            "Cause": "CloudWedge vs Hermes didnt end well"
           }
         }
       },
@@ -179,7 +179,7 @@
     },
     "CatchAllFail": {
       "Type": "Fail",
-      "Cause": "CloudVelum vs Hermes didnt end well"
+      "Cause": "CloudWedge vs Hermes didnt end well"
     }
   }
 }

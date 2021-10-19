@@ -6,8 +6,8 @@ Checks the status of the stack and returns current status
 
 import boto3
 from botocore.exceptions import ClientError
-from cloudvelum.utils.logger import get_logger
-from cloudvelum.utils.sts import get_spoke_session
+from cloudwedge.utils.logger import get_logger
+from cloudwedge.utils.sts import get_spoke_session
 
 LOGGER = get_logger('CheckStatus')
 

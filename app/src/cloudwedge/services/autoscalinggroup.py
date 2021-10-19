@@ -1,22 +1,22 @@
 """
-AutoScalingGroup for CloudVelum
+AutoScalingGroup for CloudWedge
 
 Provides implementation details for autoscalinggroup service. It follows contract
-outlined in cloudvelum.models.AWSService
+outlined in cloudwedge.models.AWSService
 """
 
 from os import environ
+from typing import Any, Dict, List, Optional
+
 import boto3
 import jmespath
-from typing import List, Any, Dict, Optional
-
-from cloudvelum.utils.logger import get_logger
-from cloudvelum.utils.tags import TagsApi
-from cloudvelum.models import AWSService, AWSResource
+from cloudwedge.models import AWSResource, AWSService
+from cloudwedge.utils.logger import get_logger
+from cloudwedge.utils.tags import TagsApi
 
 REGION = environ.get("REGION")
 
-LOGGER = get_logger("cloudvelum.autoscalinggroup")
+LOGGER = get_logger("cloudwedge.autoscalinggroup")
 
 
 # Model for Service, extending AWSResource
@@ -119,7 +119,7 @@ class AutoScalingGroupService(AWSService):
                         )
                         for tag in asg_tags
                     ):
-                        # This resource has opted in to cloudvelum
+                        # This resource has opted in to cloudwedge
 
                         # Get values from tags if they exist
                         owner_from_tag = TagsApi.get_owner_from_tags(asg_tags)

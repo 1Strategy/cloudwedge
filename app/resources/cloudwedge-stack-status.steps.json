@@ -1,5 +1,5 @@
 {
-  "Comment": "CloudVelum Builder Stack Status",
+  "Comment": "CloudWedge Builder Stack Status",
   "StartAt": "ChangeInProgress",
   "States": {
     "ChangeInProgress": {
@@ -61,7 +61,7 @@
     },
     "Failed": {
       "Type": "Fail",
-      "Cause": "CloudVelum extra cloudy"
+      "Cause": "CloudWedge extra cloudy"
     }
   }
 }

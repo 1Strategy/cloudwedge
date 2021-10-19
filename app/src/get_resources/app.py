@@ -7,10 +7,10 @@ Get a list of resources for the supported services based on tags criteria
 import itertools
 from typing import Dict, List
 
-from cloudvelum.models import AWSResource
-from cloudvelum.services import ServiceRegistry
-from cloudvelum.utils.logger import get_logger
-from cloudvelum.utils.sts import get_spoke_session
+from cloudwedge.models import AWSResource
+from cloudwedge.services import ServiceRegistry
+from cloudwedge.utils.logger import get_logger
+from cloudwedge.utils.sts import get_spoke_session
 
 LOGGER = get_logger('GetResources')
 

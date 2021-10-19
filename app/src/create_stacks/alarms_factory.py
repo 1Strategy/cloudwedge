@@ -10,10 +10,10 @@ import time
 from os import environ
 from typing import Dict, List
 
-from cloudvelum.models import AWSResource
-from cloudvelum.services import ServiceRegistry
-from cloudvelum.utils.logger import get_logger
-from cloudvelum.utils.s3 import s3_save_object
+from cloudwedge.models import AWSResource
+from cloudwedge.services import ServiceRegistry
+from cloudwedge.utils.logger import get_logger
+from cloudwedge.utils.s3 import s3_save_object
 
 from resource_alarm_factory import ResourceAlarmFactory
 
@@ -35,11 +35,11 @@ class AlarmsFactory():
 
         # Hold the templates that are created
         self.alarms = {
-            'stackName': f'cloudvelum-autogen-{self.owner}-alarms-stack',
+            'stackName': f'cloudwedge-autogen-{self.owner}-alarms-stack',
             's3TemplateKey': None,
             'template': {
                 "AWSTemplateFormatVersion": "2010-09-09",
-                "Description": f"CloudVelum Alarm Stack for all resources that have owner {self.owner}. This stack is created dynamically by CloudVelum.",
+                "Description": f"CloudWedge Alarm Stack for all resources that have owner {self.owner}. This stack is created dynamically by CloudWedge.",
                 "Resources": {}
             }
         }

@@ -3,8 +3,8 @@ import re
 import os
 from typing import Tuple, Dict, List
 
-from cloudvelum.models import AWSService, AWSTag
-from cloudvelum.utils.logger import get_logger
+from cloudwedge.models import AWSService, AWSTag
+from cloudwedge.utils.logger import get_logger
 
 # Setup logger
 LOGGER = get_logger('util.tags')
@@ -189,7 +189,7 @@ class TagsApi():
             if not tag['Key'].find(AWSService.TAG_ALARM_METRIC_PREFIX) == -1:
                 # This tag is attempting to override a metric prop
 
-                # Get the target metric e.g. Tag['Key']= cloudvelum:alarm:metric:CPUUtilization:prop:Threshold
+                # Get the target metric e.g. Tag['Key']= cloudwedge:alarm:metric:CPUUtilization:prop:Threshold
                 try:
                     tag_override_metric = re.search(f'{AWSService.TAG_ALARM_METRIC_PREFIX}(.+?):prop:', tag['Key']).group(1)
                 except AttributeError:

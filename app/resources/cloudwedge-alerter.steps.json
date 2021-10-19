@@ -88,7 +88,7 @@
               "Resource": "arn:aws:states:::sns:publish",
               "Comment": "Publish the notification to the supplied topic",
               "Parameters": {
-                "TopicArn": "${CloudVelumAlertsTopicArn}",
+                "TopicArn": "${CloudWedgeAlertsTopicArn}",
                 "Subject.$": "$.subject",
                 "Message.$": "$.message",
                 "MessageStructure": "json",
@@ -118,7 +118,7 @@
     },
     "Failed": {
       "Type": "Fail",
-      "Cause": "CloudVelum has let us down"
+      "Cause": "CloudWedge has let us down"
     }
   }
 }

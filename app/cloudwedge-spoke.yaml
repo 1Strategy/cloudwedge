@@ -1,22 +1,22 @@
 AWSTemplateFormatVersion: "2010-09-09"
 
 Description: >
-  CloudVelum is an AWS Cloudwatch monitoring framework that accelerates your
+  CloudWedge is an AWS Cloudwatch monitoring framework that accelerates your
   ability to get up and running with native AWS monitoring services. This is the spoke template
   that gets deployed from the hub.
 
   The template deploys a thin spoke. Event rules are created to forward events on to the hub that
-  are relevant to CloudVelum. A role is created, that can be assumed by the lambdas running in the hub
+  are relevant to CloudWedge. A role is created, that can be assumed by the lambdas running in the hub
   account so they can work in the spoke.
 
 Parameters:
 
-  CloudVelumEnvironment:
+  CloudWedgeEnvironment:
     Type: String
-    Description: CloudVelum running environment to target (prd or dev)
+    Description: CloudWedge running environment to target (prd or dev)
     Default: prd
 
-  CloudVelumIamRoleNamePrefix:
+  CloudWedgeIamRoleNamePrefix:
     Type: String
     Description: Prefix to add to all the iam roles that are created (include the hyphen)
 
@@ -32,7 +32,7 @@ Parameters:
     Type: String
     Description: Arn of the role in the hub account that the lambdas will use to assume a role into the spoke
 
-  HubCloudVelumStepFunctionBuilderArn:
+  HubCloudWedgeStepFunctionBuilderArn:
     Type: String
     Description: Hub Step function builder Id
 
@@ -48,7 +48,7 @@ Conditions:
 
   IsUseIamRoleNamePrefix: !Not
     - !Equals
-      - !Ref CloudVelumIamRoleNamePrefix
+      - !Ref CloudWedgeIamRoleNamePrefix
       - ""
   IsUseDebugLocalRole: !Not
     - !Equals
@@ -62,13 +62,13 @@ Resources:
   # Used by the hub accounts step function lambdas to assume into the spoke
   # read resources, and create cloudformation stacks with alarms
   # ---------------------------------------------------------------------------
-  CloudVelumWorkerRole:
+  CloudWedgeWorkerRole:
     Type: "AWS::IAM::Role"
     Properties:
       RoleName: !If
         - IsUseIamRoleNamePrefix
-        - !Sub "${CloudVelumIamRoleNamePrefix}cloudvelum-spoke-worker-role"
-        - "cloudvelum-spoke-worker-role"
+        - !Sub "${CloudWedgeIamRoleNamePrefix}cloudwedge-spoke-worker-role"
+        - "cloudwedge-spoke-worker-role"
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -98,7 +98,7 @@ Resources:
                   - cloudwatch:DescribeAlarms
                   - cloudwatch:PutMetricAlarm
                   - cloudwatch:DeleteAlarms
-                Resource: !Sub "arn:aws:cloudwatch:${AWS::Region}:${AWS::AccountId}:alarm:cloudvelum-*"
+                Resource: !Sub "arn:aws:cloudwatch:${AWS::Region}:${AWS::AccountId}:alarm:cloudwedge-*"
               - Sid: AllowCloudWatchDashboard
                 Effect: Allow
                 Action:
@@ -108,8 +108,8 @@ Resources:
                   - cloudwatch:ListMetrics
                   - cloudwatch:DeleteDashboards
                 Resource:
-                  - !Sub "arn:aws:cloudwatch:${AWS::Region}:${AWS::AccountId}:alarm:cloudvelum-*"
-                  - !Sub "arn:aws:cloudwatch::${AWS::AccountId}:dashboard/cloudvelum-*"
+                  - !Sub "arn:aws:cloudwatch:${AWS::Region}:${AWS::AccountId}:alarm:cloudwedge-*"
+                  - !Sub "arn:aws:cloudwatch::${AWS::AccountId}:dashboard/cloudwedge-*"
         - PolicyName: AccessCloudFormation
           PolicyDocument:
             Version: "2012-10-17"
@@ -121,7 +121,7 @@ Resources:
                   - cloudformation:DescribeStacks
                   - cloudformation:UpdateStack
                   - cloudformation:DeleteStack
-                Resource: !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/cloudvelum-*/*"
+                Resource: !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/cloudwedge-*/*"
               - Sid: AllowCloudFormationList
                 Effect: Allow
                 Action:
@@ -148,16 +148,16 @@ Resources:
 
   # ---------------------------------------------------------------------------
   # Role
-  # Match events to cloudvelum tags
+  # Match events to cloudwedge tags
   # ---------------------------------------------------------------------------
   # Role for event rule to use to start step function
-  CloudVelumTagEventRuleRole:
+  CloudWedgeTagEventRuleRole:
     Type: "AWS::IAM::Role"
     Properties:
       RoleName: !If
         - IsUseIamRoleNamePrefix
-        - !Sub "${CloudVelumIamRoleNamePrefix}cloudvelum-hub-event-rule-role"
-        - "cloudvelum-hub-event-rule-role"
+        - !Sub "${CloudWedgeIamRoleNamePrefix}cloudwedge-hub-event-rule-role"
+        - "cloudwedge-hub-event-rule-role"
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -177,7 +177,7 @@ Resources:
               Statement:
                 - Effect: Allow
                   Action: states:StartExecution
-                  Resource: !Ref HubCloudVelumStepFunctionBuilderArn
+                  Resource: !Ref HubCloudWedgeStepFunctionBuilderArn
           # If its not the hub account, allow forwarding to hub
           - PolicyName: AllowForwardToHubPolicy
             PolicyDocument:
@@ -189,13 +189,13 @@ Resources:
 
   # ---------------------------------------------------------------------------
   # Event Rules
-  # Match events to cloudvelum tags
+  # Match events to cloudwedge tags
   # ---------------------------------------------------------------------------
-  CloudVelumTagEventRule:
+  CloudWedgeTagEventRule:
     Type: AWS::Events::Rule
     Properties:
       Description: >
-        Match events for any cloudvelum tag and send to step function so the alarms
+        Match events for any cloudwedge tag and send to step function so the alarms
         can be updated
       EventPattern:
         detail-type:
@@ -204,7 +204,7 @@ Resources:
           - aws.tag
         detail:
           changed-tag-keys:
-            - { "prefix": "cloudvelum:" }
+            - { "prefix": "cloudwedge:" }
           service:
             - { "anything-but": ["cloudformation"] }
       State: ENABLED
@@ -212,19 +212,19 @@ Resources:
         - !If
           - IsHubAccount
           # If its the hub account, forward events to the hub step function
-          - Arn: !Ref HubCloudVelumStepFunctionBuilderArn
-            RoleArn: !GetAtt CloudVelumTagEventRuleRole.Arn
-            Id: "cloudvelum-tag-event-to-steps-builder"
+          - Arn: !Ref HubCloudWedgeStepFunctionBuilderArn
+            RoleArn: !GetAtt CloudWedgeTagEventRuleRole.Arn
+            Id: "cloudwedge-tag-event-to-steps-builder"
           # If its not the hub account, forward events to the hub event bus
           - Arn: !Sub arn:aws:events:${AWS::Region}:${HubAccountId}:event-bus/default
-            RoleArn: !GetAtt CloudVelumTagEventRuleRole.Arn
-            Id: "cloudvelum-tag-event-to-hub-bus"
+            RoleArn: !GetAtt CloudWedgeTagEventRuleRole.Arn
+            Id: "cloudwedge-tag-event-to-hub-bus"
 
-  CloudVelumAutoscalingTagEventRule:
+  CloudWedgeAutoscalingTagEventRule:
     Type: AWS::Events::Rule
     Properties:
       Description: >
-        Match events for any cloudvelum tag changed on autoscaling group and send to step function so the alarms
+        Match events for any cloudwedge tag changed on autoscaling group and send to step function so the alarms
         can be updated
       EventPattern:
         detail-type:
@@ -236,19 +236,19 @@ Resources:
           requestParameters:
             tags:
               key:
-                - { "prefix": "cloudvelum:" }
+                - { "prefix": "cloudwedge:" }
       State: ENABLED
       Targets:
         - !If
           - IsHubAccount
           # If its the hub account, forward events to the hub step function
-          - Arn: !Ref HubCloudVelumStepFunctionBuilderArn
-            RoleArn: !GetAtt CloudVelumTagEventRuleRole.Arn
-            Id: "cloudvelum-tag-event-to-steps-builder"
+          - Arn: !Ref HubCloudWedgeStepFunctionBuilderArn
+            RoleArn: !GetAtt CloudWedgeTagEventRuleRole.Arn
+            Id: "cloudwedge-tag-event-to-steps-builder"
           # If its not the hub account, forward events to the hub event bus
           - Arn: !Sub arn:aws:events:${AWS::Region}:${HubAccountId}:event-bus/default
-            RoleArn: !GetAtt CloudVelumTagEventRuleRole.Arn
-            Id: "cloudvelum-tag-event-to-hub-bus"
+            RoleArn: !GetAtt CloudWedgeTagEventRuleRole.Arn
+            Id: "cloudwedge-tag-event-to-hub-bus"
 
 
   # TODO: Custom resource invoke to tear down stacks

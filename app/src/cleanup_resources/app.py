@@ -10,8 +10,8 @@ import boto3
 from botocore.exceptions import ClientError
 import cfnresponse
 
-from cloudvelum.utils.logger import get_logger
-from cloudvelum.models import AWSService
+from cloudwedge.utils.logger import get_logger
+from cloudwedge.models import AWSService
 
 
 LOGGER = get_logger('CleanupResources')

@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "cloudvelum"
+name = "cloudwedge"
 version = "0.1.0"
 description = ""
 authors = ["cloudwedge <dev@cloudwedge.io>"]

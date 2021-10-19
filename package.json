@@ -1,7 +1,7 @@
 {
-  "name": "cloudvelum",
+  "name": "cloudwedge",
   "version": "1.0.0",
-  "description": "CloudVelum",
+  "description": "CloudWedge",
   "scripts": {
     "version": "echo $npm_package_version",
     "build": "./publishing/scripts/build.sh $1",

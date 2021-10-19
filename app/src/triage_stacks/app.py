@@ -10,9 +10,9 @@ List of objects containing orphaned stacks details
 """
 
 import boto3
-from cloudvelum.models import AWSService
-from cloudvelum.utils.logger import get_logger
-from cloudvelum.utils.sts import get_spoke_session
+from cloudwedge.models import AWSService
+from cloudwedge.utils.logger import get_logger
+from cloudwedge.utils.sts import get_spoke_session
 
 LOGGER = get_logger('TriageStacks')
 
@@ -86,7 +86,7 @@ class TriageStacks():
             for page_instances in paginator:
 
                 for stack in page_instances['Stacks']:
-                    # Filter to stacks that have a tag with cloudvelum identifier
+                    # Filter to stacks that have a tag with cloudwedge identifier
                     if any((
                         tag['Key'].strip() == AWSService.TAG_STACK_ID_KEY and
                         tag['Value'] == AWSService.TAG_STACK_ID_VALUE

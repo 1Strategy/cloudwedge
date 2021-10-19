@@ -1,8 +1,8 @@
 """
-SQS for CloudVelum
+SQS for CloudWedge
 
 Provides implementation details for sqs service. It follows contract
-outlined in cloudvelum.models.AWSService
+outlined in cloudwedge.models.AWSService
 """
 
 from os import environ
@@ -10,14 +10,14 @@ from typing import Any, Dict, List, Optional
 
 import boto3
 
-from cloudvelum.models import AWSResource, AWSService
-from cloudvelum.utils.arnparse import arnparse
-from cloudvelum.utils.logger import get_logger
-from cloudvelum.utils.tags import TagsApi
+from cloudwedge.models import AWSResource, AWSService
+from cloudwedge.utils.arnparse import arnparse
+from cloudwedge.utils.logger import get_logger
+from cloudwedge.utils.tags import TagsApi
 
 REGION = environ.get('REGION')
 
-LOGGER = get_logger('cloudvelum.sqs')
+LOGGER = get_logger('cloudwedge.sqs')
 
 
 # Model for Service, extending AWSResource
@@ -180,7 +180,7 @@ class SQSService(AWSService):
             paginator = SQS_CLIENT.get_paginator('list_queues').paginate()
 
             # Filters=[
-            #     # Filter for only resources that have cloudvelum tag
+            #     # Filter for only resources that have cloudwedge tag
             #     {'Name': f"tag:{AWSService.TAG_ACTIVE}",
             #         'Values': ["true"]},
             # ]

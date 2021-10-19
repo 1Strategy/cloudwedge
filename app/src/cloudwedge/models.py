@@ -4,12 +4,11 @@ from os import environ
 from typing import Any, Dict, List, Optional, TypedDict
 
 import boto3
-
-from cloudvelum.utils.logger import get_logger
+from cloudwedge.utils.logger import get_logger
 
 REGION = environ.get('REGION')
 
-LOGGER = get_logger("cloudvelum.models")
+LOGGER = get_logger("cloudwedge.models")
 
 class AWSTag(TypedDict):
     Key: str
@@ -53,26 +52,26 @@ class AWSService():
     override_dashboard_metric_properties: Dict[str, Any]
     override_dashboard_widget_properties: Dict[str, Any] = {}
 
-    # CloudVelum root tags
-    TAG_ACTIVE: Optional[str] = "cloudvelum:active"
-    TAG_OWNER: Optional[str] = "cloudvelum:owner"
-    TAG_LEVEL: Optional[str] = "cloudvelum:level"
-    # CloudVelum metrics tags
-    TAG_METRICS: str = "cloudvelum:metrics"
-    TAG_METRICS_CRITICAL: str = "cloudvelum:metrics:critical"
-    TAG_METRICS_HIGH: str = "cloudvelum:metrics:high"
-    TAG_METRICS_MEDIUM: str = "cloudvelum:metrics:medium"
-    TAG_METRICS_LOW: str = "cloudvelum:metrics:low"
-    # CloudVelum alarm tags
-    TAG_ALARM_PROP_PREFIX: str = "cloudvelum:alarm:prop:"
-    TAG_ALARM_METRIC_PREFIX: str = "cloudvelum:alarm:metric:"
-    # CloudVelum stack tags
-    TAG_STACK_ID_KEY: str = "cloudvelum:stack"
+    # CloudWedge root tags
+    TAG_ACTIVE: Optional[str] = "cloudwedge:active"
+    TAG_OWNER: Optional[str] = "cloudwedge:owner"
+    TAG_LEVEL: Optional[str] = "cloudwedge:level"
+    # CloudWedge metrics tags
+    TAG_METRICS: str = "cloudwedge:metrics"
+    TAG_METRICS_CRITICAL: str = "cloudwedge:metrics:critical"
+    TAG_METRICS_HIGH: str = "cloudwedge:metrics:high"
+    TAG_METRICS_MEDIUM: str = "cloudwedge:metrics:medium"
+    TAG_METRICS_LOW: str = "cloudwedge:metrics:low"
+    # CloudWedge alarm tags
+    TAG_ALARM_PROP_PREFIX: str = "cloudwedge:alarm:prop:"
+    TAG_ALARM_METRIC_PREFIX: str = "cloudwedge:alarm:metric:"
+    # CloudWedge stack tags
+    TAG_STACK_ID_KEY: str = "cloudwedge:stack"
     TAG_STACK_ID_VALUE: str = "true"
-    TAG_STACK_TYPE_KEY: str = "cloudvelum:type"
+    TAG_STACK_TYPE_KEY: str = "cloudwedge:type"
 
     # Defaults
-    DEFAULT_OWNER: str = "cloudvelum"
+    DEFAULT_OWNER: str = "cloudwedge"
     DEFAULT_LEVEL: str = "medium"
     SUPPORTED_ALERT_LEVELS: List[str] = ["critical", "high", "medium", "low"]
     SUPPORTED_ALARM_PROPS: List[str] = [
@@ -81,7 +80,7 @@ class AWSService():
     USER_TARGET_SNS: str = environ.get("USER_TARGET_TOPIC_ARN")
 
     # Alarm Description keys
-    # these are used to create the alarm description e.g. Resource=1s-dustin-stress Metric=CPUUtilization Level=medium Type=AWS/EC2 Owner=cloudvelum
+    # these are used to create the alarm description e.g. Resource=1s-dustin-stress Metric=CPUUtilization Level=medium Type=AWS/EC2 Owner=cloudwedge
     ALARM_DESCRIPTION_KEY_RESOURCE: str = "Resource"
     ALARM_DESCRIPTION_KEY_METRIC: str = "Metric"
     ALARM_DESCRIPTION_KEY_LEVEL: str = "Level"
@@ -196,10 +195,10 @@ class AWSService():
                 metrics_metric_options_dict = service.override_dashboard_metrics_options.get(metric, {})
 
                 if after_first:
-                    # [ "...", "ExecutionsFailed", "StateMachineArn", "arn:aws:states:us-west-2:ACCOUNTID:stateMachine:CloudVelumBuilderStateMachine-Xm2QclLByXty" ]
+                    # [ "...", "ExecutionsFailed", "StateMachineArn", "arn:aws:states:us-west-2:ACCOUNTID:stateMachine:CloudWedgeBuilderStateMachine-Xm2QclLByXty" ]
                     block.append(['...', resource['cloudwatchDimensionId'], metrics_metric_options_dict])
                 else:
-                    # [ "AWS/States", "ExecutionsFailed", "StateMachineArn", "arn:aws:states:us-west-2:ACCOUNTID:stateMachine:CloudVelumBuilderStateMachine-Xm2QclLByXty" ]
+                    # [ "AWS/States", "ExecutionsFailed", "StateMachineArn", "arn:aws:states:us-west-2:ACCOUNTID:stateMachine:CloudWedgeBuilderStateMachine-Xm2QclLByXty" ]
                     block.append(
                         [
                             service.cloudwatch_namespace,
@@ -288,7 +287,7 @@ class AWSService():
 
                 metrics_metric_options_dict = service.override_dashboard_metrics_options.get(metric, {})
 
-                # [ "AWS/States", "ExecutionsFailed", "StateMachineArn", "arn:aws:states:us-west-2:ACCOUNTID:stateMachine:CloudVelumBuilderStateMachine-Xm2QclLByXty" ]
+                # [ "AWS/States", "ExecutionsFailed", "StateMachineArn", "arn:aws:states:us-west-2:ACCOUNTID:stateMachine:CloudWedgeBuilderStateMachine-Xm2QclLByXty" ]
                 metric_property = [
                     service.cloudwatch_namespace,
                     metric,

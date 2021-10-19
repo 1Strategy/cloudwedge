@@ -11,13 +11,13 @@
   ],
   "detail": {
     "changed-tag-keys": [
-      "cloudvelum:active"
+      "cloudwedge:active"
     ],
     "service": "lambda",
     "resource-type": "function",
     "version": 6,
     "tags": {
-      "cloudvelum:active": "trues"
+      "cloudwedge:active": "trues"
     }
   }
 }

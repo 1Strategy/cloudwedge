@@ -2,7 +2,7 @@
 from os import environ
 
 import boto3
-from cloudvelum.utils.logger import get_logger
+from cloudwedge.utils.logger import get_logger
 
 # Setup logger
 LOGGER = get_logger('util.s3')
@@ -22,7 +22,7 @@ def get_spoke_session(target_account_id):
     try:
         spoke_assume_role=STS_CLIENT.assume_role(
             RoleArn=spoke_target_role,
-            RoleSessionName="CloudVelumAssumeRoleHubToSpoke"
+            RoleSessionName="CloudWedgeAssumeRoleHubToSpoke"
         )
     except Exception as err:
         LOGGER.error(f"Failed to assume the role in the tools account with error: {err}")

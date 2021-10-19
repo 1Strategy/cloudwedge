@@ -6,8 +6,8 @@ and uses cloudformation api to deploy the stack
 """
 
 from botocore.exceptions import ClientError
-from cloudvelum.models import AWSService
-from cloudvelum.utils.logger import get_logger
+from cloudwedge.models import AWSService
+from cloudwedge.utils.logger import get_logger
 
 LOGGER = get_logger('StackShipper')
 

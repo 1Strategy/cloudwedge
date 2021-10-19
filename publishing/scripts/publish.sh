@@ -7,12 +7,12 @@
 
 CURRENT_VERSION=$(npm run version --silent)
 ARTIFACT_BUCKET=1s-public-cloudformation
-ARTIFACT_BUCKET_PREFIX=cloudvelum-versions/$CURRENT_VERSION
-ARTIFACT_TEMPLATE_FILE=cloudvelum.yaml
+ARTIFACT_BUCKET_PREFIX=cloudwedge-versions/$CURRENT_VERSION
+ARTIFACT_TEMPLATE_FILE=cloudwedge.yaml
 TEMPLATE_OUTPUT_DIR=.out
-TEMPLATE_OUTPUT_FILE=cloudvelum-packaged.$CURRENT_VERSION.yaml
+TEMPLATE_OUTPUT_FILE=cloudwedge-packaged.$CURRENT_VERSION.yaml
 
-echo "CloudVelum Publishing version $CURRENT_VERSION"
+echo "CloudWedge Publishing version $CURRENT_VERSION"
 
 # Clear s3 target for this version
 echo "🗑  - Prepare target for upload"

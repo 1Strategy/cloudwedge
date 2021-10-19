@@ -1,8 +1,8 @@
 """
-RDS for CloudVelum
+RDS for CloudWedge
 
 Provides implementation details for rds service. It follows contract
-outlined in cloudvelum.models.AWSService
+outlined in cloudwedge.models.AWSService
 """
 
 import os
@@ -11,11 +11,11 @@ from typing import Any, Dict, List
 import boto3
 import jmespath
 
-from cloudvelum.models import AWSResource, AWSService
-from cloudvelum.utils.logger import get_logger
-from cloudvelum.utils.tags import TagsApi
+from cloudwedge.models import AWSResource, AWSService
+from cloudwedge.utils.logger import get_logger
+from cloudwedge.utils.tags import TagsApi
 
-LOGGER = get_logger('cloudvelum.rds')
+LOGGER = get_logger('cloudwedge.rds')
 
 
 # Model for Service, extending AWSResource
@@ -110,7 +110,7 @@ class RDSService(AWSService):
                     # If the active monitoring tag is on the instance, include in resource collection
                     # Stripping key so no whitespace mismatch
                     if any((tag['Key'].strip() == AWSService.TAG_ACTIVE and tag['Value'] == 'true') for tag in db_tags):
-                        # This resource has opted in to cloudvelum
+                        # This resource has opted in to cloudwedge
 
                         # Get values from tags if they exist
                         owner_from_tag = TagsApi.get_owner_from_tags(db_tags)

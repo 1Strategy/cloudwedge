@@ -6,7 +6,7 @@ Register supported services classes for consumption
 
 from typing import List
 
-from cloudvelum.models import AWSService
+from cloudwedge.models import AWSService
 
 from .apigateway import ApiGatewayService
 from .autoscalinggroup import AutoScalingGroupService
