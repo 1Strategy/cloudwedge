@@ -155,19 +155,6 @@ class StateMachineService(AWSService):
                     "setPeriodToTimeRange": True
                 }
             },
-            {
-                "height": 6,
-                "width": 12,
-                "y": 4,
-                "x": 12,
-                "type": "log",
-                "properties": {
-                    "query": "SOURCE '/aws/lambda/cc-west-dev-lambda-api-contacts-loader' | fields @timestamp, @message\n| sort @timestamp desc\n| limit 20",
-                    "region": REGION,
-                    "stacked": False,
-                    "view": "table"
-                }
-            }
         ]
 
         return front_widgets, back_widgets
