@@ -6,10 +6,9 @@ outlined in cloudwedge.models.AWSService
 """
 
 from os import environ
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 import boto3
-
 from cloudwedge.models import AWSResource, AWSService
 from cloudwedge.utils.arnparse import arnparse
 from cloudwedge.utils.logger import get_logger
@@ -138,14 +137,15 @@ class SQSService(AWSService):
         return AWSService.build_dashboard_widgets(SQSService, resources, is_group_resources=False)
 
     @staticmethod
-    def build_dashboard_widgets_byresource_extra(resource: SQSResource) -> List[Any]:
+    def build_dashboard_widgets_byresource_extra(resource: SQSResource) -> Tuple[List[Any], List[Any]]:
         """
         Build extra dashboard widgets for the resource
         """
 
-        extra_widgets = []
+        front_widgets = []
+        back_widgets = []
 
-        extra_widgets.append({
+        back_widgets.append({
             "height": 6,
             "width": 24,
             "type": "metric",
@@ -161,7 +161,7 @@ class SQSService(AWSService):
             }
         })
 
-        return extra_widgets
+        return front_widgets, back_widgets
 
 
     @ staticmethod

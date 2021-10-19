@@ -1,7 +1,7 @@
 import math
 from abc import abstractmethod
 from os import environ
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, Dict, List, Optional, Tuple, TypedDict
 
 import boto3
 from cloudwedge.utils.logger import get_logger
@@ -140,9 +140,9 @@ class AWSService():
 
         return str(validated_prop)
 
-    def build_dashboard_widgets_byresource_extra(resource: AWSResource) -> List[Any]:
+    def build_dashboard_widgets_byresource_extra(resource: AWSResource) -> Tuple[List[Any], List[Any]]:
         # Implement extra at service level
-        return []
+        return [], []
 
     @classmethod
     def build_dashboard_widgets(cls, service, resources: List[AWSResource], widgets: Optional[Dict[str, str]] = None, is_group_resources = True) -> List[Any]:
@@ -339,9 +339,11 @@ class AWSService():
 
                 resource_widgets.append(widget_metric)
 
-            extra_widgets = service.build_dashboard_widgets_byresource_extra(resource)
+            front_widgets, back_widgets = service.build_dashboard_widgets_byresource_extra(resource)
 
-            resource_widgets.extend(extra_widgets)
+            # Put front widgets after the first widget since first widget will have the name
+            resource_widgets[1:1] = front_widgets
+            resource_widgets.extend(back_widgets)
 
             widget_spacer = {
                 "height": 1,

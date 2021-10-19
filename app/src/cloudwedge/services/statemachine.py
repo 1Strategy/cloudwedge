@@ -6,11 +6,9 @@ outlined in cloudwedge.models.AWSService
 """
 
 from os import environ
-from typing import Any, Dict, List, Optional
+from typing import Any, List, Tuple
 
 import boto3
-import jmespath
-
 from cloudwedge.models import AWSResource, AWSService
 from cloudwedge.utils.logger import get_logger
 from cloudwedge.utils.tags import TagsApi
@@ -37,6 +35,8 @@ class StateMachineService(AWSService):
     default_metrics = ["ExecutionsFailed",
                         "ExecutionThrottled",
                         "ExecutionTime"]
+
+    default_dashboard_metrics = ["ExecutionTime"]
     # Alarm defaults for the service, applied if metric default doesnt exist
     default_alarm_props = {
         'Statistic': "Sum"
@@ -56,6 +56,14 @@ class StateMachineService(AWSService):
     # There are dashboard additions that can be added at the metric level
     override_dashboard_metric_properties = {}
 
+    # There are dashboard additions that can be added at the metric level
+    override_dashboard_widget_properties = {
+        'ExecutionTime': {
+            'width': 24,
+            'height': 6
+        }
+    }
+
     @staticmethod
     def build_dashboard_widgets(resources: List[StateMachineResource]) -> List[Any]:
         """
@@ -63,7 +71,106 @@ class StateMachineService(AWSService):
         """
 
         # Get widgets with base method (like calling super)
-        return AWSService.build_dashboard_widgets(StateMachineService, resources)
+        return AWSService.build_dashboard_widgets(StateMachineService, resources, is_group_resources=False)
+
+    @staticmethod
+    def build_dashboard_widgets_byresource_extra(resource: StateMachineResource) -> Tuple[List[Any], List[Any]]:
+        """
+        Build extra dashboard widgets for the resource
+        """
+
+        front_widgets = []
+        back_widgets = []
+
+        front_widgets = [
+            {
+                "height": 4,
+                "width": 6,
+                "type": "metric",
+                "properties": {
+                    "metrics": [
+                        [ { "expression": "m1-m2-m3-m4-m5-m6", "label": "Running", "id": "e3", "period": 86400, "region": "us-west-2" } ],
+                        [ { "expression": "m1/m5", "label": "Success Rate", "id": "e1", "yAxis": "left", "period": 86400, "region": "us-west-2", "visible": False } ],
+                        [ "AWS/States", "ExecutionsStarted", "StateMachineArn", resource['cloudwatchDimensionId'], { "id": "m1", "label": "Started Today", "visible": False } ],
+                        [ ".", "ExecutionsTimedOut", ".", ".", { "id": "m2", "visible": False } ],
+                        [ ".", "ExecutionThrottled", ".", ".", { "id": "m3", "visible": False } ],
+                        [ ".", "ExecutionsAborted", ".", ".", { "id": "m4", "visible": False } ],
+                        [ ".", "ExecutionsSucceeded", ".", ".", { "id": "m5", "visible": False } ],
+                        [ ".", "ExecutionsFailed", ".", ".", { "id": "m6", "visible": False } ]
+                    ],
+                    "view": "singleValue",
+                    "region": REGION,
+                    "stat": "Sum",
+                    "period": 86400,
+                    "title": "Status"
+                }
+            },
+            {
+                "height": 4,
+                "width": 12,
+                "type": "metric",
+                "properties": {
+                    "metrics": [
+                        [ { "expression": "m1-m2-m3-m4-m5-m6", "label": "Running", "id": "e3", "period": 86400, "region": "us-west-2", "visible": False } ],
+                        [ { "expression": "(m5/m1)*100", "label": "Success Rate", "id": "e1", "yAxis": "left", "period": 86400, "region": "us-west-2", "color": "#c7c7c7" } ],
+                        [ { "expression": "FLOOR(METRICS())", "label": "Expression2", "id": "e2", "visible": False, "color": "#1f77b4" } ],
+                        [ "AWS/States", "ExecutionsStarted", "StateMachineArn", resource['cloudwatchDimensionId'], { "id": "m1", "label": "Started", "color": "#1f77b4", "visible": False } ],
+                        [ ".", "ExecutionsTimedOut", ".", ".", { "id": "m2", "visible": False } ],
+                        [ ".", "ExecutionThrottled", ".", ".", { "id": "m3", "visible": False } ],
+                        [ ".", "ExecutionsAborted", ".", ".", { "id": "m4", "visible": False } ],
+                        [ ".", "ExecutionsSucceeded", ".", ".", { "id": "m5", "color": "#2ca02c", "label": "Succeeded" } ],
+                        [ ".", "ExecutionsFailed", ".", ".", { "id": "m6", "label": "Failed", "color": "#d62728" } ]
+                    ],
+                    "view": "singleValue",
+                    "region": REGION,
+                    "stat": "Sum",
+                    "period": 86400,
+                    "title": "Activity Last 24 hrs"
+                }
+            },
+            {
+                "height": 4,
+                "width": 6,
+                "type": "metric",
+                "properties": {
+                    "metrics": [
+                        [ "AWS/States", "ExecutionsTimedOut", "StateMachineArn", resource['cloudwatchDimensionId'] ],
+                        [ ".", "ExecutionThrottled", ".", "." ],
+                        [ ".", "ExecutionsAborted", ".", "." ],
+                        [ ".", "ExecutionsSucceeded", ".", "." ],
+                        [ ".", "ExecutionsFailed", ".", "." ]
+                    ],
+                    "view": "pie",
+                    "region": REGION,
+                    "stat": "Sum",
+                    "period": 300,
+                    "title": "Execution Results",
+                    "legend": {
+                        "position": "right"
+                    },
+                    "labels": {
+                        "visible": False
+                    },
+                    "stacked": False,
+                    "setPeriodToTimeRange": True
+                }
+            },
+            {
+                "height": 6,
+                "width": 12,
+                "y": 4,
+                "x": 12,
+                "type": "log",
+                "properties": {
+                    "query": "SOURCE '/aws/lambda/cc-west-dev-lambda-api-contacts-loader' | fields @timestamp, @message\n| sort @timestamp desc\n| limit 20",
+                    "region": REGION,
+                    "stacked": False,
+                    "view": "table"
+                }
+            }
+        ]
+
+        return front_widgets, back_widgets
 
     @ staticmethod
     def get_resources(session: boto3.session.Session) -> List[StateMachineResource]:
