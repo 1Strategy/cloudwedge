@@ -12,6 +12,7 @@ Expected: 2022
 - [ ] Add multi account (hub/spoke deploy)
 - [ ] Add Multi account dashbaords
 - [ ] Increase service coverage
+- [ ] Toggle services on/off to reduce polling
 - [x] Many more features planned
 
 ## `v1.11.0` [!badge text="NEXT" variant="info"]
